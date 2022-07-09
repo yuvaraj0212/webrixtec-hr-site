@@ -72,7 +72,7 @@ const AbsoluteTech = () => {
             },
           },
         ]}
-        data={datas.filter((data) => data.company === "Absolute Tech ")}
+        data={datas.filter((data) => data.company === "Absolute Tech")}
         // data={this.state.datas}
         title="Admin Dashboard "
         actions={[
