@@ -5,9 +5,14 @@ import App from "./app/App";
 import "./i18n";
 import * as serviceWorker from "./serviceWorker";
 
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 ReactDOM.render(
   <BrowserRouter basename="webrixtec/hr-management/">
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </BrowserRouter>,
   document.getElementById("root")
 );

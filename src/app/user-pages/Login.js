@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 
+import { connect } from "react-redux";
+import { login, partnerDetails } from "../../redux/action";
+
 export class Login extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +18,40 @@ export class Login extends Component {
   handelSubmit = (val) => {
     val.preventDefault();
     console.log(this.state);
-    this.props.history.push("/dashboard");
+
+    switch (this.state.email) {
+      case "webrixtec@gmail.com":
+        this.props.login();
+        this.props.history.push("/dashboard");
+        break;
+      case "abt@gmail.com":
+        const abt = { name: "Absolute Tech", role: "partner" };
+        this.props.login();
+        this.props.company(abt);
+        this.props.history.push("/partners/dashboard/Absolute Tech");
+        break;
+      case "nkt@gmail.com":
+        const nkt = { name: "Nikita", role: "partner" };
+        this.props.login();
+        this.props.company(nkt);
+        this.props.history.push("/partners/dashboard/Nikita");
+        break;
+      case "rdt@gmail.com":
+        const rdt = { name: "Red dot", role: "partner" };
+        this.props.login();
+        this.props.company(rdt);
+        this.props.history.push("/partners/dashboard/Red dot");
+        break;
+      case "dtp@gmail.com":
+        const dtp = { name: "Destination To Japan", role: "partner" };
+        this.props.login();
+        this.props.company(dtp);
+        this.props.history.push("/partners/dashboard/Destination To Japan");
+        break;
+      default:
+        break;
+    }
+    // this.props.history.push("/dashboard");
   };
   render() {
     return (
@@ -101,4 +137,17 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    AuthState: state.auth,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: () => dispatch(login()),
+    company: (val) => dispatch(partnerDetails(val)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
