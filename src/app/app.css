@@ -64,3 +64,26 @@ body {
   text-decoration: none;
   background: #000;
 }
+th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-sizeMedium.tss-10syd3x-MUIDataTableHeadCell-root.tss-gm6zfk-MUIDataTableHeadCell-fixedHeader.css-1ygcj2i-MuiTableCell-root {
+  white-space: nowrap;
+}
+.tss-gm6zfk-MUIDataTableHeadCell-fixedHeader {
+  position: inherit !important;
+  top: 0px !important;
+  z-index: 100 !important;
+  background: #fdc134 !important;
+  color: white !important;
+}
+
+th {
+  width: 17%;
+  color: #284966;
+}
+button.nav-link.btn.create-new-button.no-caret.dropdown-toggle.btn.btn-primary {
+  background: #fdc134;
+  border: 1px #fdc134 solid;
+}
+button.nav-link.btn.create-new-button.no-caret.dropdown-toggle.btn.btn-primary:hover {
+  background: linear-gradient(180deg, #213b52 0%, #213c54 35%, #204564 100%);
+  border: 1px #fdc134 solid;
+}

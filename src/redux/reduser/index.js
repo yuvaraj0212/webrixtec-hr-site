@@ -1,29 +1,33 @@
 import { LOG_IN, LOG_OUT, PARTNER } from "../action";
 
-const initialState = {
-  auth: localStorage.getItem("auth"),
-  company: { name: "", role: "" },
+var initialState = {
+  authenticated: false,
+  rolename: "",
+  adminToPartner: false,
+  inPartnerData: {},
 };
 
 const authReduser = (state = initialState, action) => {
   switch (action.type) {
     case LOG_IN:
+      console.log(action);
       return {
-        ...state,
-        auth: localStorage.setItem("auth", true),
+        ...action.playload,
+        authenticated: true,
+        adminToPartner: false,
+        inPartnerData: {},
+        rolename: action.playload.roles[0].rolename,
       };
 
     case LOG_OUT:
-      return {
-        ...state,
-        auth: localStorage.setItem("auth", false),
-        company: { name: "", role: "" },
-      };
+      console.log("logOut", action);
+      return {};
 
     case PARTNER:
       return {
         ...state,
-        company: { name: action.playload.name, role: action.playload.role },
+        adminToPartner: true,
+        inPartnerData: action.playload,
       };
 
     default:

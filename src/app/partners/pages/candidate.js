@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MaterialTable from "material-table";
-import {
-  getResume,
-  //  deleteResumeDetails
-} from "../../axios";
+import { connect } from "react-redux";
 import {
   Modal,
   Form,
@@ -13,16 +9,24 @@ import {
   Input,
   Button,
   DatePicker,
+  notification,
 } from "antd";
 // const { confirm } = Modal;
 import { useSelector } from "react-redux";
 import TextArea from "antd/lib/input/TextArea";
-const Candidate = () => {
-  const partner = useSelector((state) => state.company);
-  const [datas, setDates] = useState([]);
+import MUIDataTable from "mui-datatables";
+import { getAllPratnerCandidate } from "../../../redux/action/candidate";
+import axios, {
+  getAllCandidateMethode,
+  getAllPratnerCandidateMethode,
+} from "../../axios";
+const Candidate = (props) => {
+  const User = useSelector((state) => state.auth);
   const [visible, setVisible] = useState(false);
+  const [updateId, setUpdateId] = useState();
   const [addvisible, setAddvisible] = useState(false);
   const [form] = Form.useForm();
+  const [data, setData] = useState([]);
   useEffect(() => {
     getAllResume();
   }, []);
@@ -48,13 +52,12 @@ const Candidate = () => {
   // };
 
   const getAllResume = () => {
-    getResume().then((val) => {
-      if (val.data.status === 200) {
-        setDates(val.data.result);
-      }
-    });
+    // getResume().then((val) => {
+    //   if (val.data.status === 200) {
+    //     setDates(val.data.result);
+    //   }
+    // });
   };
-  console.log(partner);
   const layout = {
     labelCol: {
       span: 8,
@@ -69,10 +72,70 @@ const Candidate = () => {
     form.resetFields();
   };
   const handleSubmit = (values) => {
-    console.log(values);
+    let obj = new FormData();
+    obj.append("cname", values.cname);
+    obj.append("cemail", values.cemail);
+    obj.append("cphone", values.cphone);
+    obj.append(
+      "cDOB",
+      new Intl.DateTimeFormat("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(values.cDOB)
+    );
+    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("cMSG", values.cMSG);
+    obj.append("createdBy", "webrixtec");
+    obj.append("jobID", values.jobID);
+    obj.append("userId", props.auth.id);
+    handleCancel();
+    axios
+      .post(`/user/update-candidate?candidId=${updateId}`, obj)
+      .then((res) => {
+        if (res.data.status === 200) {
+          getAllCandidateMethode(props.getAllCandidate);
+          notification.success({
+            message: res.data.message,
+          });
+        } else {
+          notification.warn({
+            message: res.data.message,
+          });
+        }
+      });
   };
   const createhandleSubmit = (values) => {
-    console.log(values);
+    let obj = new FormData();
+    obj.append("cname", values.cname);
+    obj.append("cemail", values.cemail);
+    obj.append("cphone", values.cphone);
+    obj.append(
+      "cDOB",
+      new Intl.DateTimeFormat("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(values.cDOB)
+    );
+    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("cMSG", values.cMSG);
+    obj.append("createdBy", "webrixtec");
+    obj.append("jobID", values.jobID);
+    obj.append("userId", User.id);
+    handleCancel();
+    axios.post("/user/create-candidate", obj).then((res) => {
+      if (res.data.status === 200) {
+        getAllPratnerCandidateMethode(props.getAllCandidate, props.auth.name);
+        notification.success({
+          message: res.data.message,
+        });
+      } else {
+        notification.warn({
+          message: res.data.message,
+        });
+      }
+    });
   };
   return (
     <>
@@ -236,7 +299,7 @@ const Candidate = () => {
           <Form.Item
             label="job ID"
             name="jobID"
-            rules={[{ required: false, message: "Please input your JOB ID!" }]}
+            rules={[{ required: true, message: "Please input your JOB ID!" }]}
           >
             <Input />
           </Form.Item>
@@ -255,156 +318,183 @@ const Candidate = () => {
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Message" name={"cMSG"}>
+          <Form.Item
+            label="Message"
+            rules={[
+              { required: true, message: "Please input your message feild!" },
+            ]}
+            name={"cMSG"}
+          >
             <TextArea rows={4} />
           </Form.Item>
-
-          {/* <Form.Item
-            label="Interview Status"
-            name="interviewStatus"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item> */}
-
-          {/* <Form.Item
-            label="Status"
-            name="status"
-            required
-            tooltip="This is a required field"
-          >
-            <Select size={"large"} placeholder="Please select ">
-              <Select.Option value="processing">Processing</Select.Option>
-              <Select.Option value="rejected">Rejected</Select.Option>
-              <Select.Option value="duplication">Duplication</Select.Option>
-              <Select.Option value="offergot">Offer Got</Select.Option>
-            </Select>
-          </Form.Item> */}
         </Form>
       </Modal>
-      <MaterialTable
-        options={{
-          exportButton: {
-            csv: true,
-            // pdf: true,
-          },
-          actionsColumnIndex: -1,
-        }}
+
+      <MUIDataTable
+        title={"Candidate List"}
+        data={props.candidate.candidateList.filter((data) =>
+          props.auth.adminToPartner
+            ? data.user.name === props.auth.inPartnerData.name
+            : data.user.name === User.name
+        )}
         columns={[
-          { title: "ID", field: "id" },
-          { title: "Candidate Name", field: "name" },
-          { title: "Candidate Mobile", field: "phone" },
-          { title: "Candidate Email", field: "email" },
-          { title: "Candidate DOB", field: "date" },
-          { title: "Company", field: "company" },
-          { title: "job ID", field: "jobID" },
           {
-            title: "Status",
-            field: "status",
-            render: (rowData) => {
-              let a = String(rowData.id).slice(-1);
-              let x;
-              if (a === "1" || a === "3" || a === "7") {
-                x = 1;
-              } else if (a === "2" || a === "4") {
-                x = 2;
-              } else if (a === "8" || a === "6") {
-                x = 3;
-              } else if (a === "9" || a === "5") {
-                x = 4;
-              }
-
-              switch (x) {
-                case 1:
-                  return (
-                    <button
-                      type="button"
-                      className="btn btn-success btn-fw btn-sm"
-                    >
-                      Offer Got
-                    </button>
-                  );
-                case 2:
-                  return (
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-fw btn-sm"
-                    >
-                      Processing
-                    </button>
-                  );
-                case 3:
-                  return (
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-fw btn-sm"
-                    >
-                      Rejected
-                    </button>
-                  );
-                case 4:
-                  return (
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-fw btn-sm"
-                    >
-                      Duplication
-                    </button>
-                  );
-                default:
-                  return (
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-fw btn-sm"
-                    >
-                      Yet to start
-                    </button>
-                  );
-              }
+            label: "ID",
+            name: "id",
+            options: {
+              filter: false,
+              sort: true,
             },
           },
           {
-            title: "Resume",
-            field: "fileUrl",
-            render: (rowData) => {
-              return (
-                <a
-                  href={rowData.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                >
-                  Download
-                </a>
-              );
+            label: "Candidate Name",
+            name: "cname",
+            options: {
+              filter: false,
+              sort: true,
+            },
+          },
+          {
+            label: "Candidate Mobile",
+            name: "cphone",
+            options: {
+              filter: false,
+              sort: true,
+            },
+          },
+          {
+            label: "Candidate Email",
+            name: "cemail",
+            options: {
+              filter: false,
+              sort: true,
+            },
+          },
+          {
+            label: "Candidate DOB",
+            name: "cdob",
+            options: {
+              filter: false,
+              sort: true,
+            },
+          },
+          {
+            label: "Company",
+            name: "user",
+            options: {
+              filter: true,
+              sort: true,
+              customBodyRender: (value) => {
+                return value.name;
+              },
+            },
+          },
+          {
+            label: "job ID",
+            name: "jobID",
+            options: {
+              filter: false,
+              sort: true,
+            },
+          },
+          {
+            label: "Resume",
+            name: "imagUrl",
+            options: {
+              filter: false,
+              sort: true,
+              customBodyRender: (value) => {
+                return (
+                  <a
+                    href={value}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                  >
+                    Download
+                  </a>
+                );
+              },
+            },
+          },
+          {
+            label: "message",
+            name: "cmsg",
+            options: {
+              filter: false,
+              sort: true,
             },
           },
 
-          { title: "message", field: "cMSG" },
+          User.roles[0].rolename !== "ROLE_ADMIN"
+            ? ""
+            : {
+                name: "Edit",
+                options: {
+                  filter: false,
+                  sort: false,
+                  empty: true,
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                      <>
+                        <span>
+                          {" "}
+                          <i
+                            style={{ fontSize: "22px" }}
+                            className="mdi mdi-border-color cursor-pointer"
+                            onClick={() => {
+                              console.log(tableMeta.rowData);
+                              setData(tableMeta.rowData);
+                              setVisible(true);
+                              setUpdateId(tableMeta.rowData[0]);
+                            }}
+                          ></i>
+                        </span>
+                        <span>
+                          {/* {" "}
+                          <i
+                            style={{ fontSize: "22px" }}
+                            className="mdi mdi-delete cursor-pointer"
+                            onClick={() =>
+                              showConfirm(true, tableMeta.rowData[0])
+                            }
+                          ></i> */}
+                        </span>
+                      </>
+                    );
+                  },
+                },
+              },
         ]}
-        data={datas.filter((data) => data.company === partner.name)}
-        // data={datas}
-        title="CANDIDATES LIST"
-        actions={[
-          // {
-          //   icon: "delete",
-          //   tooltip: "Delete",
-          //   onClick: (event, rowData) => showConfirm(event, rowData.id),
-          // },
-          {
-            icon: "edite",
-            tooltip: "edite",
-            onClick: (event, rowData) => setVisible(true),
-          },
-          {
-            icon: "add",
-            tooltip: "Add User",
-            isFreeAction: true,
-            onClick: (event) => setAddvisible(true),
-          },
-        ]}
+        options={{
+          selectableRows: false,
+
+          responsive: "standard",
+          viewColumns: false,
+          customToolbar: () => (
+            <span>
+              <i
+                style={{ fontSize: "19px", color: "#66696c" }}
+                className="mdi mdi mdi-account-plus cursor-pointer"
+                onClick={() => setAddvisible(true)}
+              ></i>
+            </span>
+          ),
+        }}
       />
     </>
   );
 };
-export default Candidate;
+const mapStateToProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllCandidate: (val) => dispatch(getAllPratnerCandidate(val)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Candidate);

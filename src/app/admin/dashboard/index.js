@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Line } from "react-chartjs-2";
 import { Link } from "react-router-dom";
-
+import { connect } from "react-redux";
 export class Index extends Component {
   transactionHistoryData = {
     labels: ["Paypal", "Stripe", "Cash"],
@@ -126,10 +126,12 @@ export class Index extends Component {
                   <div className="row">
                     <div className="col-8 col-sm-12 col-xl-8 my-auto">
                       <div className="d-flex d-sm-block d-md-flex align-items-center">
-                        <h2 className="mb-0">$32123</h2>
-                        <p className="text-success ml-2 mb-0 font-weight-medium">
+                        <h2 className="mb-0" style={{ color: "#fdc134" }}>
+                          {this.props.candidate.candidateCount}
+                        </h2>
+                        {/* <p className="text-success ml-2 mb-0 font-weight-medium">
                           +3.5%
-                        </p>
+                        </p> */}
                       </div>
                       <h6 className="text-muted font-weight-normal">
                         11.38% Since last month
@@ -152,10 +154,12 @@ export class Index extends Component {
                   <div className="row">
                     <div className="col-8 col-sm-12 col-xl-8 my-auto">
                       <div className="d-flex d-sm-block d-md-flex align-items-center">
-                        <h2 className="mb-0">$45850</h2>
-                        <p className="text-success ml-2 mb-0 font-weight-medium">
+                        <h2 className="mb-0" style={{ color: "#ffffff" }}>
+                          {this.props.candidate.offerCount}
+                        </h2>
+                        {/* <p className="text-success ml-2 mb-0 font-weight-medium">
                           +8.3%
-                        </p>
+                        </p> */}
                       </div>
                       <h6 className="text-muted font-weight-normal">
                         {" "}
@@ -179,10 +183,12 @@ export class Index extends Component {
                   <div className="row">
                     <div className="col-8 col-sm-12 col-xl-8 my-auto">
                       <div className="d-flex d-sm-block d-md-flex align-items-center">
-                        <h2 className="mb-0">$2039</h2>
-                        <p className="text-danger ml-2 mb-0 font-weight-medium">
+                        <h2 className="mb-0">
+                          {this.props.candidate.processingCount}
+                        </h2>
+                        {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
                           -2.1%{" "}
-                        </p>
+                    </p>*/}
                       </div>
                       <h6 className="text-muted font-weight-normal">
                         2.27% Since last month
@@ -217,10 +223,12 @@ export class Index extends Component {
                     <div className="row">
                       <div className="col-8 col-sm-12 col-xl-8 my-auto">
                         <div className="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 className="mb-0">$2039</h2>
-                          <p className="text-danger ml-2 mb-0 font-weight-medium">
+                          <h2 className="mb-0">
+                            {this.props.candidate.rejectedCount}
+                          </h2>
+                          {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
                             -2.1%{" "}
-                          </p>
+                          </p> */}
                         </div>
                         <h6 className="text-muted font-weight-normal">
                           2.27% Since last month
@@ -243,10 +251,12 @@ export class Index extends Component {
                     <div className="row">
                       <div className="col-8 col-sm-12 col-xl-8 my-auto">
                         <div className="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 className="mb-0">$2039</h2>
-                          <p className="text-danger ml-2 mb-0 font-weight-medium">
+                          <h2 className="mb-0">
+                            {this.props.candidate.duplicationCount}
+                          </h2>
+                          {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
                             -2.1%{" "}
-                          </p>
+                          </p> */}
                         </div>
                         <h6 className="text-muted font-weight-normal">
                           2.27% Since last month
@@ -267,4 +277,14 @@ export class Index extends Component {
   }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

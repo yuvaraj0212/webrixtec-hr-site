@@ -1,51 +1,71 @@
 import React, { useEffect, useState } from "react";
-import MaterialTable from "material-table";
-import { getResume, deleteResumeDetails } from "../../axios";
-import { Modal, Form, Select, Input } from "antd";
+import { Modal, Form, Select, notification } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-const { confirm } = Modal;
+import MUIDataTable from "mui-datatables";
+import { connect } from "react-redux";
+import { getAllCandidate } from "../../../redux/action/candidate";
+import axios, { getAllCandidateMethode } from "../../axios";
+// const { confirm } = Modal;
 
-const Index = () => {
-  const [datas, setDates] = useState([]);
+const Index = (props) => {
   const [visible, setVisible] = useState(false);
+  const [updateId, setUpdateId] = useState();
   const [form] = Form.useForm();
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     getAllResume();
   }, []);
 
-  const deleteResume = (id) => {
-    deleteResumeDetails(id).then((val) => {
-      if (val.data.status === 200) {
-        getAllResume();
-        console.log(val.data);
-      }
-    });
-  };
-  const showConfirm = (event, id) => {
-    confirm({
-      title: "Do you Want to delete these items?",
-      // icon: <ExclamationCircleOutlined />,
-      content: "Some descriptions",
-      onOk() {
-        deleteResume(id);
-      },
-      onCancel() {},
-    });
-  };
+  // const deleteResume = (id) => {
+  // deleteResumeDetails(id).then((val) => {
+  //   if (val.data.status === 200) {
+  //     getAllResume();
+  //     console.log(val.data);
+  //   }
+  // });
+  // };
+  // const showConfirm = (event, id) => {
+  //   confirm({
+  //     title: "Do you Want to delete these items?",
+  //     // icon: <ExclamationCircleOutlined />,
+  //     content: "Some descriptions",
+  //     onOk() {
+  //       deleteResume(id);
+  //     },
+  //     onCancel() {},
+  //   });
+  // };
   const getAllResume = () => {
-    getResume().then((val) => {
-      if (val.data.status === 200) {
-        setDates(val.data.result);
-      }
-    });
+    // getResume().then((val) => {
+    //   if (val.data.status === 200) {
+    //     setDates(val.data.result);
+    //   }
+    // });
   };
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
   };
   const handleSubmit = (values) => {
+    values.tracker_id = updateId;
     console.log(values);
+    axios.post("/admin/update-tracker", values).then((res) => {
+      if (res.data.status === 200) {
+        console.log(res);
+        setVisible(false);
+        form.resetFields();
+        getAllCandidateMethode(props.getAllCandidate);
+        notification.success({
+          message: res.data.message,
+        });
+      } else {
+        setVisible(false);
+        notification.warn({
+          message: res.data.message,
+        });
+      }
+    });
   };
   const layout = {
     labelCol: {
@@ -61,7 +81,7 @@ const Index = () => {
         <Form {...layout} form={form} onFinish={handleSubmit}>
           <h6>Update list</h6>
 
-          <Form.Item
+          {/* <Form.Item
             label="Candidate Name"
             name="name"
             rules={[{ required: true, message: "Please input your username!" }]}
@@ -80,7 +100,7 @@ const Index = () => {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           {/* 
           <Form.Item
             label="Mobile"
@@ -94,7 +114,7 @@ const Index = () => {
             />
           </Form.Item> */}
 
-          <Form.Item
+          {/* <Form.Item
             label="client Name"
             name="company"
             rules={[
@@ -102,16 +122,17 @@ const Index = () => {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item
             label="Track Status"
-            name="trackstatus"
-            required
+            name="trackStaus"
+            initialValue={data[4] ? data[4] : ""}
+            rules={[{ required: true, message: "Please input your Status!" }]}
             tooltip="This is a required field"
           >
             <Select size={"large"} placeholder="Please select ">
-              <Select.Option value="yetToStart">Yet To Start</Select.Option>
+              <Select.Option value={null}>Yet To Start</Select.Option>
               <Select.Option value="processing">Processing</Select.Option>
               <Select.Option value="rejected">Rejected</Select.Option>
               <Select.Option value="duplication">Duplication</Select.Option>
@@ -119,25 +140,169 @@ const Index = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Message" name={"DuplicationMessage"}>
+          <Form.Item
+            label="Message"
+            initialValue={data[5] ? data[5] : ""}
+            rules={[
+              { required: true, message: "Please input your Status message!" },
+            ]}
+            name={"track_msg"}
+          >
             <TextArea rows={4} />
           </Form.Item>
         </Form>
       </Modal>
-      <MaterialTable
+
+      <MUIDataTable
+        title={"TRACKER"}
+        data={props.candidate.candidateList.filter(
+          (data) => data.candidateStatus !== null
+        )}
+        columns={[
+          { title: "ID", name: "id" },
+          { title: "Candidate Name", name: "cname" },
+          // { title: "Candidate Mobile", name: "phone" },
+          { title: "Candidate Email", name: "cemail" },
+          {
+            title: "Client Name",
+            name: "user",
+            options: {
+              filter: true,
+              sort: true,
+              customBodyRender: (value) => {
+                return value.name;
+              },
+            },
+          },
+          {
+            title: "Track Status",
+            name: "candidateStatus",
+            options: {
+              filter: false,
+              sort: true,
+              empty: true,
+              customBodyRender: (x, tableMeta) => {
+                switch (x) {
+                  case "offergot":
+                    return (
+                      <p>
+                        <i className="icon mdi mdi-wallet-travel text-primary ml-auto">
+                          offergot
+                        </i>
+                      </p>
+                    );
+                  case "processing":
+                    return (
+                      <p>
+                        <i className="icon mdi mdi-cached text-success ml-auto">
+                          Processing
+                        </i>
+                      </p>
+                    );
+                  case "rejected":
+                    return (
+                      <p>
+                        <i className="icon mdi mdi-close text-danger ml-auto">
+                          Rejected
+                        </i>
+                      </p>
+                    );
+                  case "duplication":
+                    return (
+                      <p>
+                        <i className="icon mdi mdi-block-helper text-danger ml-auto">
+                          Duplication
+                        </i>
+                      </p>
+                    );
+                  default:
+                    return (
+                      <p
+                        // type="button"
+                        // className="btn btn-primary btn-fw btn-sm"
+                        className="text-primary"
+                      >
+                        yet to start
+                      </p>
+                    );
+                }
+              },
+            },
+          },
+          {
+            title: "Message",
+            name: "candidateStatusMsg",
+            // options: {
+            //   filter: true,
+            //   sort: true,
+            //   customBodyRender: (value, tableMeta) => {
+            //     console.log(tableMeta);
+            //     return value.track_msg;
+            //   },
+            // },
+          },
+          {
+            name: "Edit",
+            options: {
+              filter: false,
+              sort: false,
+              empty: true,
+              customBodyRender: (value, tableMeta, updateValue) => {
+                return (
+                  <>
+                    <span>
+                      {" "}
+                      <i
+                        style={{ fontSize: "22px" }}
+                        className="mdi mdi-border-color cursor-pointer"
+                        onClick={() => {
+                          console.log(tableMeta.rowData);
+                          setData(tableMeta.rowData);
+                          setVisible(true);
+                          setUpdateId(tableMeta.rowData[0]);
+                        }}
+                      ></i>
+                    </span>
+                    <span>
+                      {" "}
+                      {/* <i
+                        style={{ fontSize: "22px" }}
+                        className="mdi mdi-delete cursor-pointer"
+                        onClick={() => showConfirm(true, tableMeta.rowData[0])}
+                      ></i> */}
+                    </span>
+                  </>
+                );
+              },
+            },
+          },
+        ]}
+        options={{
+          selectableRows: false,
+          responsive: "standard",
+          viewColumns: false,
+          filter: false,
+        }}
+      />
+
+      {/* <MaterialTable
         options={{
           exportButton: {
             csv: true,
             // pdf: true,
           },
           actionsColumnIndex: -1,
+          headerStyle: {
+            backgroundColor: "#a7a7a7",
+            color: "#FFF",
+          },
         }}
         columns={[
           { title: "ID", field: "id" },
           { title: "Candidate Name", field: "name" },
           // { title: "Candidate Mobile", field: "phone" },
           { title: "Candidate Email", field: "email" },
-          { title: "Clieant Name", field: "company" },
+          { title: "Client Name", field: "company" },
           {
             title: "Track Status",
             field: "trackstatus",
@@ -157,48 +322,46 @@ const Index = () => {
               switch (x) {
                 case 1:
                   return (
-                    <button
-                      type="button"
-                      className="btn btn-success btn-fw btn-sm"
-                    >
-                      Offer Got
-                    </button>
+                    <p>
+                      <i className="icon mdi mdi-wallet-travel text-primary ml-auto">
+                        offergot
+                      </i>
+                    </p>
                   );
                 case 2:
                   return (
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-fw btn-sm"
-                    >
-                      Processing
-                    </button>
+                    <p>
+                      <i className="icon mdi mdi-cached text-success ml-auto">
+                        Processing
+                      </i>
+                    </p>
                   );
                 case 3:
                   return (
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-fw btn-sm"
-                    >
-                      Rejected
-                    </button>
+                    <p>
+                      <i className="icon mdi mdi-close text-danger ml-auto">
+                        Rejected
+                      </i>
+                    </p>
                   );
                 case 4:
                   return (
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-fw btn-sm"
-                    >
-                      Duplication
-                    </button>
+                    <p>
+                      <i className="icon mdi mdi-block-helper text-danger ml-auto">
+                        {" "}
+                        Duplication
+                      </i>
+                    </p>
                   );
                 default:
                   return (
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-fw btn-sm"
+                    <p
+                      // type="button"
+                      // className="btn btn-primary btn-fw btn-sm"
+                      className="text-primary"
                     >
                       yet to start
-                    </button>
+                    </p>
                   );
               }
             },
@@ -220,8 +383,20 @@ const Index = () => {
             onClick: (event, rowData) => setVisible(true),
           },
         ]}
-      />
+      /> */}
     </>
   );
 };
-export default Index;
+const mapStateToProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllCandidate: (val) => dispatch(getAllCandidate(val)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

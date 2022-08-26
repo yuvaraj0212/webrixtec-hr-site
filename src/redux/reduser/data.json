@@ -1,0 +1,50 @@
+[
+    {
+      "id": 1,
+      "cname": "",
+      "cemail": "",
+      "cphone": "",
+      "cDOB": "",
+      "jobID": 0,
+      "mfile": {},
+      "cMSG": "",
+      "company": {
+        "id": 1,
+        "name": "",
+        "email": "",
+        "altEmail": "",
+        "ndaDate": "",
+        "altPhone": "",
+        "repName": "",
+        "repAltName": "",
+        "ceo": "",
+        "city": "",
+        "country": ""
+      },
+      "duplication": {
+        "status": "",
+        "dMSG": ""
+      },
+      "offer": {
+        "annualCTC": "",
+        "joiningDate": "",
+        "Message": "",
+        "companyRef": "",
+        "offerDate": ""
+      },
+      "processing": {
+        "tech": "",
+        "startDate": "",
+        "interviewStatus": "",
+        "budjet": ""
+      },
+      "rejected": {
+        "rof": "",
+        "message": ""
+      },
+      "track": {
+        "trackstatus": "",
+        "message": ""
+      }
+    }
+  ]

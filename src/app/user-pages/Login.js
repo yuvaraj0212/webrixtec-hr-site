@@ -1,9 +1,18 @@
+import { notification } from "antd";
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 
 import { connect } from "react-redux";
-import { login, partnerDetails } from "../../redux/action";
+import { login } from "../../redux/action";
+import {
+  getAllCandidate,
+  getAllPratner,
+  getAllPratnerCandidate,
+} from "../../redux/action/candidate";
+import axios, {
+  getAllCandidateMethode,
+  getAllPratnerCandidateMethode,
+} from "../axios";
 
 export class Login extends Component {
   constructor(props) {
@@ -17,41 +26,54 @@ export class Login extends Component {
 
   handelSubmit = (val) => {
     val.preventDefault();
-    console.log(this.state);
+    axios
+      .post("user/signin", this.state)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === 200) {
+          if (response.data.result.roles.length > 0) {
+            this.props.Authenticat(response.data.result);
+            localStorage.setItem(
+              "token",
+              JSON.stringify(response.data.result.token)
+            );
+            notification.success({
+              message: "login successfull",
+              placement: "bottomRight",
+            });
 
-    switch (this.state.email) {
-      case "webrixtec@gmail.com":
-        this.props.login();
-        this.props.history.push("/dashboard");
-        break;
-      case "abt@gmail.com":
-        const abt = { name: "Absolute Tech", role: "partner" };
-        this.props.login();
-        this.props.company(abt);
-        this.props.history.push("/partners/dashboard/Absolute Tech");
-        break;
-      case "nkt@gmail.com":
-        const nkt = { name: "Nikita", role: "partner" };
-        this.props.login();
-        this.props.company(nkt);
-        this.props.history.push("/partners/dashboard/Nikita");
-        break;
-      case "rdt@gmail.com":
-        const rdt = { name: "Red dot", role: "partner" };
-        this.props.login();
-        this.props.company(rdt);
-        this.props.history.push("/partners/dashboard/Red dot");
-        break;
-      case "dtp@gmail.com":
-        const dtp = { name: "Destination To Japan", role: "partner" };
-        this.props.login();
-        this.props.company(dtp);
-        this.props.history.push("/partners/dashboard/Destination To Japan");
-        break;
-      default:
-        break;
-    }
-    // this.props.history.push("/dashboard");
+            console.log(this.props);
+            if (response.data.result.roles[0].rolename === "ROLE_PARTNER") {
+              getAllPratnerCandidateMethode(
+                this.props.getAllPratnerCandidate,
+                response.data.result.name
+              );
+              this.props.history.push(
+                `/partners/dashboard/${response.data.result.name}`
+              );
+            } else {
+              axios
+                .get("/admin/get/userdetails", {
+                  headers: {
+                    Authorization: `Bearer ${response.data.result.token}`,
+                  },
+                })
+                .then((res) => this.props.getPartner(res.data.result));
+              getAllCandidateMethode(this.props.getAllCandidate);
+              this.props.history.push(`/dashboard`);
+            }
+          }
+        } else {
+          notification.warn({
+            message: response.data.message,
+          });
+        }
+      })
+      .catch((res) =>
+        notification.warn({
+          message: res.message,
+        })
+      );
   };
   render() {
     return (
@@ -61,16 +83,14 @@ export class Login extends Component {
             <div className="col-lg-4 mx-auto">
               <div className="card text-left py-5 px-4 px-sm-5">
                 <div className="brand-logo">
-                  {/* <Link to={"/"}> */}
-                  {/* <img
-                      src={require("../../assets/images/logo.svg")}
-                      alt="logo"
-                    /> */}
-                  <h2 className="text-white">WEBRIXTEC</h2>
-                  {/* </Link> */}
+                  <h2 className="text-white">
+                    WEBRIXTEC<span style={{ color: "#fdc134" }}>.</span>
+                  </h2>
                 </div>
-                <h4>Hello! let's get started</h4>
-                <h6 className="font-weight-light">Sign in to continue.</h6>
+                <h4 className="text-white">Hello! let's get started</h4>
+                <h6 className="font-weight-light text-white">
+                  Sign in to continue.
+                </h6>
                 <Form className="pt-3" onSubmit={this.handelSubmit}>
                   <Form.Group className="d-flex search-field">
                     <Form.Control
@@ -94,7 +114,13 @@ export class Login extends Component {
                   </Form.Group>
                   <div className="mt-3">
                     <Button
-                      className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                      style={{
+                        backgroundColor: "#fdc134",
+                        color: "#284966",
+                        fontFamily: "Poppins",
+                        fontWeight: "bold",
+                      }}
+                      className="btn btn-block btn-primary  btn-lg font-weight-medium auth-form-btn"
                       type="submit"
                     >
                       SIGN IN
@@ -108,25 +134,25 @@ export class Login extends Component {
                         Keep me signed in
                       </label>
                     </div>
-                    <a
+                    {/* <a
                       href="!#"
                       onClick={(event) => event.preventDefault()}
                       className="auth-link text-muted"
                     >
                       Forgot password?
-                    </a>
+                    </a> */}
                   </div>
                   {/* <div className="mb-2">
                     <button type="button" className="btn btn-block btn-facebook auth-form-btn">
                       <i className="mdi mdi-facebook mr-2"></i>Connect using facebook
                     </button>
                   </div> */}
-                  <div className="text-center mt-4 font-weight-light">
+                  {/* <div className="text-center mt-4 font-weight-light">
                     Don't have an account?{" "}
                     <Link to="/user-pages/register-1" className="text-primary">
                       Create
                     </Link>
-                  </div>
+                  </div> */}
                 </Form>
               </div>
             </div>
@@ -145,8 +171,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: () => dispatch(login()),
-    company: (val) => dispatch(partnerDetails(val)),
+    Authenticat: (val) => dispatch(login(val)),
+    getPartner: (val) => dispatch(getAllPratner(val)),
+    getAllCandidate: (val) => dispatch(getAllCandidate(val)),
+    getAllPratnerCandidate: (val) => dispatch(getAllPratnerCandidate(val)),
   };
 };
 

@@ -1,8 +1,8 @@
-import { notification } from "antd";
+// import { notification } from "antd";
 import React, { Component } from "react";
 import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { addResume } from "../../axios";
+// import { addResume } from "../../axios";
 
 export class Register2 extends Component {
   constructor(props) {
@@ -28,23 +28,23 @@ export class Register2 extends Component {
     bodyFormData.append("company", company);
     bodyFormData.append("mfile", mfile);
     console.log(bodyFormData);
-    addResume(bodyFormData).then((val) => {
-      if (val.data.status === 200) {
-        console.log(val.result);
-        notification.success({
-          message: val.data.message,
-          description: "This feature has been updated later!",
-        });
-        this.props.history.push("/admin/candidate/success");
-      }
-      if (val.data.status !== 200) {
-        notification.warn({
-          message: val.data.message,
-          description: "This feature has been updated later!",
-        });
-        console.log(val.message);
-      }
-    });
+    // addResume(bodyFormData).then((val) => {
+    //   if (val.data.status === 200) {
+    //     console.log(val.result);
+    //     notification.success({
+    //       message: val.data.message,
+    //       description: "This feature has been updated later!",
+    //     });
+    //     this.props.history.push("/admin/candidate/success");
+    //   }
+    //   if (val.data.status !== 200) {
+    //     notification.warn({
+    //       message: val.data.message,
+    //       description: "This feature has been updated later!",
+    //     });
+    //     console.log(val.message);
+    //   }
+    // });
   };
 
   render() {

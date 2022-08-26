@@ -1,14 +1,12 @@
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
 
-// Pratner Details
-
 export const PARTNER = "PARTNER";
 
-export function login() {
+export function login(val) {
   return {
     type: LOG_IN,
-    desc: "login",
+    playload: val,
   };
 }
 

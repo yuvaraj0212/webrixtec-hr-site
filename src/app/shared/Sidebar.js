@@ -60,218 +60,17 @@ class Sidebar extends Component {
 
   render() {
     if (
-      this.props.location.pathname.startsWith("/partners") &&
-      this.props.company.name
+      this.props.auth.name &&
+      this.props.auth.roles[0].rolename === "ROLE_ADMIN" &&
+      this.props.auth.adminToPartner === false
     ) {
-      console.log(this.props);
       return (
         <nav className="sidebar sidebar-offcanvas" id="sidebar">
           <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
             <Link className="sidebar-brand brand-logo" to={"/dashboard"}>
-              {/* <img src={require("../../assets/images/logo.svg")} alt="logo" /> */}
               <h2
                 style={{
                   color: "white",
-                  // fontFamily: "Poppins",
-                  // letterSpacing: "2px",
-                }}
-              >
-                {this.props.company.name}{" "}
-                <span style={{ color: "#fdc134" }}>.</span>
-              </h2>
-            </Link>
-            <Link className="sidebar-brand brand-logo-mini" to={"/dashboard"}>
-              <h1 style={{ color: "white" }}>W</h1>
-            </Link>
-          </div>
-          <ul className="nav">
-            <li className="nav-item nav-category">
-              <span className="nav-link">
-                <Trans>Navigation</Trans>
-              </span>
-            </li>
-
-            <li
-              className={
-                this.isPathActive(
-                  `/partners/dashboard/:${this.props.company.name}`
-                )
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link
-                className="nav-link"
-                to={`/partners/dashboard/:${this.props.company.name}`}
-              >
-                <span className="menu-icon">
-                  <i className="mdi mdi-speedometer"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Dashboard</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/partners/candidates")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/partners/candidates">
-                <span className="menu-icon">
-                  <i className="mdi mdi-account"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Candidates</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/partners/processing")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/partners/processing">
-                <span className="menu-icon">
-                  <i className="mdi mdi-cached"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Processing</Trans>
-                </span>
-              </Link>
-            </li>
-
-            {this.props.company.role ? (
-              ""
-            ) : (
-              <li
-                className={
-                  this.isPathActive("/partners/duplication")
-                    ? "nav-item menu-items active"
-                    : "nav-item menu-items"
-                }
-              >
-                <Link className="nav-link" to="/partners/duplication">
-                  <span className="menu-icon">
-                    <i className="mdi mdi-block-helper"></i>
-                  </span>
-                  <span className="menu-title">
-                    <Trans>Duplication</Trans>
-                  </span>
-                </Link>
-              </li>
-            )}
-
-            <li
-              className={
-                this.isPathActive("/partners/offers")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/partners/offers">
-                <span className="menu-icon">
-                  <i className="mdi mdi-wallet-travel"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Offers</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/partners/rejected")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/partners/rejected">
-                <span className="menu-icon">
-                  <i className="mdi mdi-close"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Rejected</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li className="nav-item nav-category">
-              <span className="nav-link">
-                <Trans>Details</Trans>
-              </span>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/admin/dashboard")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/admin/dashboard">
-                <span className="menu-icon">
-                  <i className="mdi mdi-speedometer"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Contract Details</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/admin/dashboard")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/admin/dashboard">
-                <span className="menu-icon">
-                  <i className="mdi mdi-speedometer"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Invoice Details</Trans>
-                </span>
-              </Link>
-            </li>
-
-            <li
-              className={
-                this.isPathActive("/admin/dashboard")
-                  ? "nav-item menu-items active"
-                  : "nav-item menu-items"
-              }
-            >
-              <Link className="nav-link" to="/admin/dashboard">
-                <span className="menu-icon">
-                  <i className="mdi mdi-speedometer"></i>
-                </span>
-                <span className="menu-title">
-                  <Trans>Address</Trans>
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      );
-    } else {
-      return (
-        <nav className="sidebar sidebar-offcanvas" id="sidebar">
-          <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-            <Link className="sidebar-brand brand-logo" to={"/dashboard"}>
-              {/* <img src={require("../../assets/images/logo.svg")} alt="logo" /> */}
-              <h2
-                style={{
-                  color: "white",
-                  // fontFamily: "Poppins",
-                  // letterSpacing: "2px",
                 }}
               >
                 WEBRIXTEC
@@ -279,7 +78,11 @@ class Sidebar extends Component {
               </h2>
             </Link>
             <Link className="sidebar-brand brand-logo-mini" to={"/dashboard"}>
-              <h1 style={{ color: "white" }}>W</h1>
+              <img
+                src={require("../../assets/images/logo.png")}
+                alt="logo "
+                style={{ width: "100%" }}
+              />
             </Link>
           </div>
           <ul className="nav">
@@ -407,6 +210,23 @@ class Sidebar extends Component {
                 </span>
                 <span className="menu-title">
                   <Trans>Candidates</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/admin/jobdescription")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/admin/jobdescription">
+                <span className="menu-icon">
+                  <i className="mdi mdi-cached"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>job description</Trans>
                 </span>
               </Link>
             </li>
@@ -983,6 +803,228 @@ class Sidebar extends Component {
               </a>
             </li> */}
             </>
+          </ul>
+        </nav>
+      );
+    } else {
+      return (
+        <nav className="sidebar sidebar-offcanvas" id="sidebar">
+          <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+            <Link
+              className="sidebar-brand brand-logo"
+              to={`/partners/dashboard/${this.props.auth.name}`}
+            >
+              <h2
+                style={{
+                  color: "white",
+                  // fontFamily: "Poppins",
+                  // letterSpacing: "2px",
+                }}
+              >
+                {this.props.auth.adminToPartner === true
+                  ? this.props.auth.inPartnerData.name
+                  : this.props.auth.name}
+              </h2>
+            </Link>
+            <Link className="sidebar-brand brand-logo-mini" to={"/dashboard"}>
+              <img
+                src={require("../../assets/images/logo.png")}
+                alt="logo "
+                style={{ width: "100%" }}
+              />
+            </Link>
+          </div>
+          <ul className="nav">
+            <li className="nav-item nav-category">
+              <span className="nav-link">
+                <Trans>Navigation</Trans>
+              </span>
+            </li>
+
+            <li
+              className={
+                this.isPathActive(
+                  `/partners/dashboard/:${this.props.auth.name}`
+                )
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link
+                className="nav-link"
+                to={`/partners/dashboard/:${this.props.auth.name}`}
+              >
+                <span className="menu-icon">
+                  <i className="mdi mdi-speedometer"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Dashboard</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/partners/candidates")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/partners/candidates">
+                <span className="menu-icon">
+                  <i className="mdi mdi-account"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Candidates</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/partners/jobdescription")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/partners/jobdescription">
+                <span className="menu-icon">
+                  <i className="mdi mdi-wallet-travel"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>job Description</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/partners/processing")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/partners/processing">
+                <span className="menu-icon">
+                  <i className="mdi mdi-cached"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Processing</Trans>
+                </span>
+              </Link>
+            </li>
+
+            {/* {this.props.auth.roles[0].rolename !== "ROLE_ADMIN" ? (
+              ""
+            ) : (
+              <li
+                className={
+                  this.isPathActive("/partners/duplication")
+                    ? "nav-item menu-items active"
+                    : "nav-item menu-items"
+                }
+              >
+                <Link className="nav-link" to="/partners/duplication">
+                  <span className="menu-icon">
+                    <i className="mdi mdi-block-helper"></i>
+                  </span>
+                  <span className="menu-title">
+                    <Trans>Duplication</Trans>
+                  </span>
+                </Link>
+              </li>
+            )} */}
+
+            <li
+              className={
+                this.isPathActive("/partners/offers")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/partners/offers">
+                <span className="menu-icon">
+                  <i className="mdi mdi-wallet-travel"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Offers</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/partners/rejected")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/partners/rejected">
+                <span className="menu-icon">
+                  <i className="mdi mdi-close"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Rejected</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li className="nav-item nav-category">
+              <span className="nav-link">
+                <Trans>Details</Trans>
+              </span>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/admin/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/admin/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-speedometer"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Contract Details</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/admin/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/admin/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-speedometer"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Invoice Details</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/admin/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/admin/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-speedometer"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Address</Trans>
+                </span>
+              </Link>
+            </li>
           </ul>
         </nav>
       );

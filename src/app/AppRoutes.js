@@ -19,6 +19,11 @@ const Processing = lazy(() => import("./admin/processing"));
 const Rejected = lazy(() => import("./admin/rejected"));
 const Tracker = lazy(() => import("./admin/trcker"));
 const YetToStart = lazy(() => import("./admin/yetToStart"));
+const jobdescription = lazy(() => import("./admin/jobdescription"));
+// user
+
+const Login = lazy(() => import("./user-pages/Login"));
+const Register1 = lazy(() => import("./user-pages/Register"));
 
 const Buttons = lazy(() => import("./basic-ui/Buttons"));
 const Dropdowns = lazy(() => import("./basic-ui/Dropdowns"));
@@ -35,11 +40,9 @@ const ChartJs = lazy(() => import("./charts/ChartJs"));
 const Error404 = lazy(() => import("./error-pages/Error404"));
 const Error500 = lazy(() => import("./error-pages/Error500"));
 
-const Login = lazy(() => import("./user-pages/Login"));
-const Register1 = lazy(() => import("./user-pages/Register"));
-
 //  partners
 
+const partnersJobDesc = lazy(() => import("./partners/pages/jobdescription"));
 const partnersCandidate = lazy(() => import("./partners/pages/candidate"));
 const partnersOffers = lazy(() => import("./partners/pages/offer"));
 const partnersDuplication = lazy(() => import("./partners/pages/duplication"));
@@ -55,15 +58,14 @@ class AppRoutes extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <Suspense fallback={<Spinner />}>
         {/* <Switch> */}
+        <Route path="/spinner" component={Spinner} />
 
-        <Redirect to={"/user-pages/login-1"} />
-        <Route exact path="/" component={Dashboard} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/admin/candidates" component={Candidate} />
+        <Route path="/admin/jobdescription" component={jobdescription} />
         <Route path="/admin/offers" component={Offers} />
         <Route path="/admin/duplication" component={Duplication} />
         <Route path="/admin/processing" component={Processing} />
@@ -78,6 +80,8 @@ class AppRoutes extends Component {
         <Route path="/error-pages/error-404" component={Error404} />
         <Route path="/error-pages/error-500" component={Error500} />
         {/* partners */}
+
+        <Route path="/partners/jobdescription" component={partnersJobDesc} />
         <Route path="/partners/dashboard/:partner" component={Partner} />
         <Route path="/partners/candidates" component={partnersCandidate} />
         <Route path="/partners/offers" component={partnersOffers} />
@@ -98,6 +102,8 @@ class AppRoutes extends Component {
         <Route path="/icons/mdi" component={Mdi} />
 
         <Route path="/charts/chart-js" component={ChartJs} />
+
+        <Redirect to={"/user-pages/login-1"} />
       </Suspense>
     );
   }
@@ -105,8 +111,7 @@ class AppRoutes extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    Autenticate: state.auth,
-    partner: state.company,
+    auth: state.auth.authenticated,
   };
 };
 

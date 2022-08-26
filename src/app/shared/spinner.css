@@ -1,0 +1,55 @@
+.logoLoader {
+  /* border: 16px solid #f3f3f3;
+  /* Light grey 
+  border-top: 16px solid #17163b;
+  /* Dark Green 
+  border-radius: 50%;
+  width: 152px;
+  height: 151px;
+  animation: spinloader 2s linear infinite; */
+
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #17163b;
+  border-radius: 50%;
+  width: 152px;
+  height: 151px;
+  display: flex;
+  text-align: center;
+  animation: spinloader 2s linear infinite;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.logoLoader img {
+  height: 90px;
+  width: 100px;
+  animation: spinlogo 2s linear infinite;
+}
+
+@keyframes spinloader {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinlogo {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+#divSpinner {
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: space-around;
+  /* align-items: baseline; */
+  margin: 15% 0;
+}

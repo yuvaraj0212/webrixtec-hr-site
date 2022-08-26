@@ -41,7 +41,6 @@ class App extends Component {
   }
 
   onRouteChanged() {
-    console.log("ROUTE CHANGED");
     const { i18n } = this.props;
     const body = document.querySelector("body");
     if (this.props.location.pathname === "/layout/RtlLayout") {
@@ -53,6 +52,7 @@ class App extends Component {
     }
     window.scrollTo(0, 0);
     const fullPageLayoutRoutes = [
+      "/",
       "/user-pages/login-1",
       "/user-pages/login-2",
       "/user-pages/register-1",

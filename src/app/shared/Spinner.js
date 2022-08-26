@@ -1,15 +1,18 @@
-import React, { Component } from 'react'
-
+import React, { Component } from "react";
+import "./spinner.css";
 export class Spinner extends Component {
   render() {
     return (
-      <div>
-        <div className="spinner-wrapper">
-          <div className="donut"></div>
+      <div id="divSpinner">
+        <div className="logoLoader">
+          <img
+            src={require("../../assets/img/logos/webrixtec-log.png")}
+            alt="spinner"
+          />
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default Spinner
+export default Spinner;

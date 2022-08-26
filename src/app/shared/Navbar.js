@@ -2,17 +2,23 @@ import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Trans } from "react-i18next";
-import { Form, Input, InputNumber, Modal, DatePicker } from "antd";
-
+import {
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  DatePicker,
+  Select,
+  notification,
+  Button,
+} from "antd";
+import axios from "../axios";
 import { connect } from "react-redux";
 import { logout, partnerDetails } from "../../redux/action";
+import { Password } from "@mui/icons-material";
+import { getAllPratner } from "../../redux/action/candidate";
+const { Option } = Select;
 
-const partners = [
-  { name: "Absolute Tech" },
-  { name: "Nikita" },
-  { name: "Red dot" },
-  { name: "Destination To Japan" },
-];
 class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +33,7 @@ class Navbar extends Component {
   toggleRightSidebar() {
     document.querySelector(".right-sidebar").classList.toggle("open");
   }
+
   render() {
     const { visible } = this.state;
     const layout = {
@@ -43,7 +50,29 @@ class Navbar extends Component {
       console.log(this.props);
     };
     const handleSubmit = (values) => {
+      let getdate = new Intl.DateTimeFormat("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(values.Date);
+      values.ndaDate = getdate;
       console.log(values);
+      axios.post("/user/signup", values).then((res) => {
+        if (res.data.status === 200) {
+          axios
+            .get("/admin/get/userdetails")
+            .then((res) => this.props.getPartner(res.data.result));
+          notification.success({
+            message: res.data.message,
+            placement: "bottomRight",
+          });
+        } else {
+          notification.warn({
+            message: res.data.message,
+          });
+        }
+      });
+      this.setState({ visible: false });
     };
 
     console.log(this.props);
@@ -51,7 +80,7 @@ class Navbar extends Component {
       <>
         <Modal
           visible={visible}
-          onOk={"document.getElementById('myFrom').submit"}
+          footer={null}
           onCancel={handleCancel}
           width="100%"
         >
@@ -61,7 +90,7 @@ class Navbar extends Component {
               <div className="col-md-6 col-12">
                 <Form.Item
                   label={"Company Name"}
-                  name="companyName"
+                  name="name"
                   rules={[
                     {
                       required: true,
@@ -73,7 +102,7 @@ class Navbar extends Component {
                 </Form.Item>
                 <Form.Item
                   label="Company Email"
-                  name="companyEmail"
+                  name="email"
                   rules={[
                     {
                       required: true,
@@ -87,7 +116,7 @@ class Navbar extends Component {
 
                 <Form.Item
                   label="Alternative Email"
-                  name="companyAltEmail"
+                  name="altEmail"
                   rules={[
                     {
                       required: false,
@@ -101,7 +130,7 @@ class Navbar extends Component {
 
                 <Form.Item
                   label="NDA Date"
-                  name="NDADate"
+                  name="Date"
                   rules={[
                     {
                       required: true,
@@ -114,7 +143,7 @@ class Navbar extends Component {
 
                 <Form.Item
                   label="Contact Number"
-                  name="companyNumber"
+                  name="phone"
                   rules={[
                     { required: true, message: "Please input Contact Number" },
                   ]}
@@ -128,7 +157,7 @@ class Navbar extends Component {
 
                 <Form.Item
                   label="Alternative Number"
-                  name="companyAltNumber"
+                  name="altPhone"
                   rules={[
                     { required: false, message: "Please input Contact Number" },
                   ]}
@@ -143,40 +172,36 @@ class Navbar extends Component {
 
               <div className="col-md-6 col-12">
                 <Form.Item
-                  label="Representative Name 1"
-                  name="representativeName"
+                  label="Representative Name"
+                  name="repName"
                   rules={[
                     {
                       required: true,
                       message: "Please input your representative Name !",
-                    },
-                    {
-                      type: "",
                     },
                   ]}
                 >
                   <Input />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="Representative Name 2"
-                  name="representativeAltName"
+                  name="repAltName"
                   rules={[
                     {
                       required: false,
                       message: "Please input your representative Name !",
                     },
                     {
-                      type: "",
                     },
                   ]}
                 >
                   <Input />
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item
                   label="Company CEO"
-                  name="companyCEO"
+                  name="ceo"
                   rules={[
                     {
                       required: true,
@@ -206,15 +231,44 @@ class Navbar extends Component {
                 >
                   <Input />
                 </Form.Item>
+
+                <Form.Item
+                  label="Passwoer"
+                  name="password"
+                  rules={[
+                    {
+                      required: false,
+                      message: "Please enter your Password!",
+                    },
+                    {
+                      type: Password,
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </div>
+            </div>
+            <div className="row">
+              <div className="offset-md-10">
+                <Form.Item className="float-right">
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                </Form.Item>
               </div>
             </div>
           </Form>
         </Modal>
         <nav className="navbar p-0 fixed-top d-flex flex-row">
           <div className="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <Link className="navbar-brand brand-logo-mini" to="/dashboard">
-              <h3 className="text-white">W</h3>
-            </Link>
+            <div className="navbar-brand brand-logo-mini">
+              <img
+                src={require("../../assets/images/logo.png")}
+                alt="logo "
+                style={{ width: "100%" }}
+              />
+            </div>
           </div>
           <div className="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
             <button
@@ -238,49 +292,70 @@ class Navbar extends Component {
               </li>
             </ul>
             <ul className="navbar-nav navbar-nav-right">
-              {this.props.company.role !== "partner" && (
-                <Dropdown
-                  alignRight
-                  as="li"
-                  className="nav-item d-none d-lg-block"
-                >
-                  <Dropdown.Toggle className="nav-link btn btn-success create-new-button no-caret">
+              {this.props.auth.rolename === "ROLE_ADMIN" && (
+                <Dropdown alignRight as="li" className="nav-item ">
+                  <Dropdown.Toggle className="nav-link btn  create-new-button no-caret">
                     <Trans>Partners</Trans>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="navbar-dropdown preview-list create-new-dropdown-menu">
-                    <h6 className="p-3 mb-0 text-success">
+                    {/* <h6 className="p-3 mb-0 text-success">
                       <Trans className="">Add Partner</Trans>
                     </h6>
-                    <Dropdown.Divider />
+                    <Dropdown.Divider /> */}
                     <Dropdown.Item
                       // href="!#"
+
                       onClick={(evt) => this.setState({ visible: true })}
-                      className="preview-item"
+                      className="preview-item text-warning"
                     >
-                      <Trans>Create Partners</Trans>
+                      <Trans>Add Partners</Trans>
                     </Dropdown.Item>
                     <Dropdown.Divider />
 
-                    <h6 className="p-3 mb-0 text-success">
+                    <h6 className="p-3 mb-0 text-warning">
                       <Trans>List Partner</Trans>
                     </h6>
 
-                    <Dropdown.Divider />
-
-                    {partners.map((pName) => (
-                      <>
-                        <Dropdown.Item className="preview-item">
-                          <Link
-                            to={`/partners/dashboard/${pName.name}`}
-                            onClick={() => this.props.Partner(pName.name)}
-                          >
-                            <Trans>{pName.name}</Trans>
+                    {/* <Dropdown.Item> */}
+                    <Select
+                      showSearch
+                      style={{
+                        width: 200,
+                      }}
+                      placeholder="Search to Select"
+                      optionFilterProp="children"
+                      filterOption={
+                        (input, option) => {
+                          return (
+                            option.value
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          );
+                        }
+                        // option.children.includes(input)
+                      }
+                      // filterSort={(optionA, optionB) =>
+                      //   optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                      // }
+                    >
+                      {this.props.candidate.partnerList.map((data, index) => (
+                        <Option
+                          value={data.name}
+                          key={index}
+                          className="text-warning "
+                        >
+                          <Link to={`/partners/dashboard/${data.name}`}>
+                            <span onClick={() => this.props.currentUser(data)}>
+                              {data.name}
+                            </span>
                           </Link>
-                        </Dropdown.Item>
-                        <Dropdown.Divider />
-                      </>
-                    ))}
+                        </Option>
+                      ))}
+                    </Select>
+                    {/* </Dropdown.Item> */}
+
+                    <Dropdown.Divider />
 
                     <>
                       {/* <Dropdown.Item
@@ -571,7 +646,6 @@ class Navbar extends Component {
                   </Dropdown.Item> */}
                   <Dropdown.Divider />
                   <Dropdown.Item
-                    href=""
                     onClick={(evt) => evt.preventDefault()}
                     className="preview-item"
                   >
@@ -617,7 +691,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    Partner: (val) => dispatch(partnerDetails({ name: val })),
+    getPartner: (val) => dispatch(getAllPratner(val)),
+    currentUser: (val) => dispatch(partnerDetails(val)),
   };
 };
 

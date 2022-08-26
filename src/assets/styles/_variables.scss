@@ -55,8 +55,14 @@ $theme-colors: (
 ////////// COLOR SYSTEM //////////
 
 ////////// COLOR VARIABLES //////////
-$content-bg: #000000;
-$footer-bg: $content-bg;
+$content-bg: white;
+// $footer-bg: $content-bg;
+$footer-bg:linear-gradient(
+  180deg,
+  #213b52 0%,
+  #213c54 35%,
+  #204564 100%
+);
 $footer-color: color(dark);
 $border-color: #2c2e33;
 $circle-border: rgb(26, 57, 85); 
@@ -109,11 +115,19 @@ $sidebar-width-lg: 244px;
 $sidebar-width-mini: 185px;
 $sidebar-width-icon: 70px;
 
-$sidebar-bg: #191c24;
+// $sidebar-bg: #191c24;
+$sidebar-bg:linear-gradient(
+    180deg,
+    #213b52 0%,
+    #213c54 35%,
+    #204564 100%
+  );
 $sidebar-menu-color: $text-muted;
-$sidebar-menu-active-bg: darken($sidebar-bg, 5%);
+// $sidebar-menu-active-bg: darken($sidebar-bg, 5%);
+$sidebar-menu-active-bg:$sidebar-bg;
 $sidebar-menu-active-color: #ffffff;
-$sidebar-menu-hover-bg: darken($sidebar-bg, 5%);
+// $sidebar-menu-hover-bg: darken($sidebar-bg, 5%);
+$sidebar-menu-hover-bg:$sidebar-bg;
 $sidebar-menu-hover-color: color(white);
 $sidebar-submenu-color: $sidebar-menu-color;
 $sidebar-submenu-hover-bg: initial;
@@ -142,14 +156,19 @@ $sidebar-icon-only-menu-padding: .5rem 1.625rem .5rem 1.188rem;
 $sidebar-icon-only-submenu-padding: 0 0 0 1.5rem;
 
 $icon-only-collapse-width: 190px;
-$icon-only-menu-bg: darken($sidebar-bg, 5%);
-
+// $icon-only-menu-bg: darken($sidebar-bg, 5%);
+$icon-only-menu-bg:$sidebar-bg;
 ///////// SIDEBAR ////////
 
 ///////// NAVBAR ////////
 
 $navbar-height: 70px;
-$navbar-bg: #191c24;
+$navbar-bg: linear-gradient(
+  180deg,
+  #213b52 0%,
+  #213c54 35%,
+  #204564 100%
+);
 $navbar-menu-color: #ffffff;
 $navbar-font-size: .9375rem;
 $navbar-icon-font-size: 1.125rem;
@@ -158,7 +177,8 @@ $navbar-box-shadow: 20px 19px 34px -15px rgba(0,0,0,0.5);
 ///////// NAVBAR ////////
 
 ///////// CARD ////////
-$card-bg: #191c24;
+$card-bg:#213c54;// #191c24;
+// $card-bg:linear-gradient( 180deg, #213b52 0%, #213c54 35%, #204564 100%);
 $card-description-color: #bfbfbf;
 $card-title-color: #ffffff;
 ///////// CARD ////////
@@ -246,7 +266,8 @@ $dropdown-item-hover-color: $white;
 $dropdown-border-color: $border-color;
 $dropdown-divider-bg: $border-color;
 $dropdown-link-color: $body-color;
-$dropdown-link-hover-bg: darken($card-bg, 3%);
+// $dropdown-link-hover-bg: darken($card-bg, 3%);
+$dropdown-link-hover-bg:$card-bg;
 $dropdown-header-color: $body-color;
 $dropdown-menu-box-shadow: none;
 
@@ -360,7 +381,8 @@ $nav-tabs-link-bg:                  $content-bg;
 $nav-tabs-link-color:               $body-color;
 $nav-tabs-link-hover-border-color:  $nav-tabs-border-color $nav-tabs-border-color $nav-tabs-border-color;
 $nav-tabs-link-active-color:        $body-color;
-$nav-tabs-link-active-bg:           darken($content-bg, 5%);
+// $nav-tabs-link-active-bg:           darken($content-bg, 5%);
+$nav-tabs-link-active-bg:           $content-bg;
 $nav-tabs-link-active-border-color: $nav-tabs-border-color $nav-tabs-border-color $nav-tabs-link-active-bg;
 $nav-pills-custom-bg:               #8489ab;
 $text-gray:gray;
@@ -403,4 +425,4 @@ $chat-bottom-btn: $input-bg;
 $form-focus-bg: $white;
 ///////// CHATS ///////
 
-$bullet-line-list-shape-bg: color(white) !default;
+$bullet-line-list-shape-bg: color(rgb(243, 149, 9)) !default;
