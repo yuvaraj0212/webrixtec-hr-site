@@ -55,7 +55,8 @@ const Index = (props) => {
       if (res.data.status === 200) {
         setVisible(false);
         form.resetFields();
-        getAllPratnerCandidateMethode(props.getAllCandidate, props.auth.name);
+        var partner_name = JSON.parse(sessionStorage.getItem("pratner_name"));
+        getAllPratnerCandidateMethode(props.getAllCandidate, partner_name);
         notification.success({
           message: res.data.message,
         });
@@ -220,8 +221,8 @@ const Index = (props) => {
         title={"DUPLICATION"}
         data={props.candidate.candidateList.filter((data) =>
           props.auth.adminToPartner
-            ? data.user.name === props.auth.inPartnerData.name&&
-            data.candidateStatus === "duplication"
+            ? data.user.name === props.auth.inPartnerData.name &&
+              data.candidateStatus === "duplication"
             : data.user.name === User.name &&
               data.candidateStatus === "duplication"
         )}

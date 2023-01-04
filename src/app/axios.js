@@ -1,6 +1,6 @@
 import Axios from "axios";
-var token = JSON.parse(localStorage.getItem("token"));
-// alert(token);
+var token = JSON.parse(sessionStorage.getItem("token"));
+console.log(token);
 const instance = Axios.create({
   baseURL: "http://localhost:8080/",
   headers: {

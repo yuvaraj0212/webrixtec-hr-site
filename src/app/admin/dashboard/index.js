@@ -92,6 +92,7 @@ export class Index extends Component {
     },
   };
   render() {
+    console.log(this.props);
     return (
       <div>
         <div className="proBanner hide">
@@ -134,7 +135,7 @@ export class Index extends Component {
                         </p> */}
                       </div>
                       <h6 className="text-muted font-weight-normal">
-                        11.38% Since last month
+                        last update
                       </h6>
                     </div>
                     <div className="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
@@ -154,7 +155,7 @@ export class Index extends Component {
                   <div className="row">
                     <div className="col-8 col-sm-12 col-xl-8 my-auto">
                       <div className="d-flex d-sm-block d-md-flex align-items-center">
-                        <h2 className="mb-0" style={{ color: "#ffffff" }}>
+                        <h2 className="mb-0" style={{ color: "#fdc134" }}>
                           {this.props.candidate.offerCount}
                         </h2>
                         {/* <p className="text-success ml-2 mb-0 font-weight-medium">
@@ -162,8 +163,7 @@ export class Index extends Component {
                         </p> */}
                       </div>
                       <h6 className="text-muted font-weight-normal">
-                        {" "}
-                        9.61% Since last month
+                        last update
                       </h6>
                     </div>
                     <div className="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
@@ -183,7 +183,7 @@ export class Index extends Component {
                   <div className="row">
                     <div className="col-8 col-sm-12 col-xl-8 my-auto">
                       <div className="d-flex d-sm-block d-md-flex align-items-center">
-                        <h2 className="mb-0">
+                        <h2 className="mb-0" style={{ color: "#fdc134" }}>
                           {this.props.candidate.processingCount}
                         </h2>
                         {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
@@ -191,7 +191,7 @@ export class Index extends Component {
                     </p>*/}
                       </div>
                       <h6 className="text-muted font-weight-normal">
-                        2.27% Since last month
+                        last update
                       </h6>
                     </div>
                     <div className="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
@@ -223,7 +223,7 @@ export class Index extends Component {
                     <div className="row">
                       <div className="col-8 col-sm-12 col-xl-8 my-auto">
                         <div className="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 className="mb-0">
+                          <h2 className="mb-0" style={{ color: "#fdc134" }}>
                             {this.props.candidate.rejectedCount}
                           </h2>
                           {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
@@ -231,7 +231,7 @@ export class Index extends Component {
                           </p> */}
                         </div>
                         <h6 className="text-muted font-weight-normal">
-                          2.27% Since last month
+                          last update
                         </h6>
                       </div>
                       <div className="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
@@ -251,7 +251,7 @@ export class Index extends Component {
                     <div className="row">
                       <div className="col-8 col-sm-12 col-xl-8 my-auto">
                         <div className="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 className="mb-0">
+                          <h2 className="mb-0" style={{ color: "#fdc134" }}>
                             {this.props.candidate.duplicationCount}
                           </h2>
                           {/* <p className="text-danger ml-2 mb-0 font-weight-medium">
@@ -259,7 +259,7 @@ export class Index extends Component {
                           </p> */}
                         </div>
                         <h6 className="text-muted font-weight-normal">
-                          2.27% Since last month
+                          last update
                         </h6>
                       </div>
                       <div className="col-4 col-sm-12 col-xl-4 text-center text-xl-right">

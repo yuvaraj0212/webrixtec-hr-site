@@ -12,11 +12,14 @@ import axios, { getAllCandidateMethode } from "../../axios";
 const Index = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    rejected_msg: "",
+    rof: "",
+  });
   const [form] = Form.useForm();
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -37,13 +40,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
@@ -134,8 +131,10 @@ const Index = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            rejected_msg: tableMeta.rowData[4].rejected_msg,
+                            rof: tableMeta.rowData[4].rof,
+                          });
                           setVisible(true);
                           setUpdateId(tableMeta.rowData[4].id);
                         }}
@@ -163,45 +162,13 @@ const Index = (props) => {
         }}
       />
 
-      {/* <MaterialTable
-        options={{
-          exportButton: {
-            csv: true,
-            // pdf: true,
-          },
-          actionsColumnIndex: -1,
-          headerStyle: {
-            backgroundColor: "#a7a7a7",
-            color: "#FFF",
-          },
-        }}
-        columns={[
-          { title: "ID", field: "id" },
-          { title: "Candidate Name", field: "name" },
-          // { title: "Candidate Mobile", field: "phone" },
-          { title: "Candidate Email", field: "email" },
-          { title: "Client Name", field: "company" },
-          { title: "Round Of Rejected", field: "ROf" },
-          { title: "Message", field: "message" },
-        ]}
-        // data={datas.filter((data) => data.company === "Absolute Tech")}
-        data={datas}
-        title="REJECTED"
-        actions={[
-          {
-            icon: "delete",
-            tooltip: "Delete User",
-            onClick: (event, rowData) => showConfirm(event, rowData.id),
-          },
-          {
-            icon: "edite",
-            tooltip: "edite",
-            onClick: (event, rowData) => setVisible(true),
-          },
-        ]}
-      /> */}
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          initialValues={data}
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+        >
           <h6>Update list</h6>
 
           {/* <Form.Item
@@ -238,7 +205,6 @@ const Index = (props) => {
           <Form.Item
             label="Round Of Rejected"
             name="rof"
-            initialValue={data[4] ? data[4].rof : ""}
             rules={[
               { required: true, message: "Please select Round Of Rejected!" },
             ]}
@@ -258,7 +224,6 @@ const Index = (props) => {
 
           <Form.Item
             label="Message"
-            initialValue={data[4] ? data[4].rejected_msg : ""}
             rules={[{ required: true, message: "Please input your message!" }]}
             name={"rejected_msg"}
           >

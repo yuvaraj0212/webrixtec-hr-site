@@ -18,6 +18,7 @@ class App extends Component {
     let navbarComponent = !this.state.isFullPageLayout ? <Navbar /> : "";
     let sidebarComponent = !this.state.isFullPageLayout ? <Sidebar /> : "";
     let footerComponent = !this.state.isFullPageLayout ? <Footer /> : "";
+    console.log(this.state);
     return (
       <div className="container-scroller">
         {sidebarComponent}

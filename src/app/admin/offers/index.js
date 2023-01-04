@@ -14,18 +14,25 @@ import MUIDataTable from "mui-datatables";
 import { connect } from "react-redux";
 import { getAllCandidate } from "../../../redux/action/candidate";
 import axios, { getAllCandidateMethode } from "../../axios";
+import moment from "moment";
 // const { confirm } = Modal;
 
 const Index = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    clientRef: "",
+    annualCTC: "",
+    offer_msg: "",
+    joiningDate: "",
+    offerDate: "",
+  });
   // const [addvisible, setAddvisible] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -46,13 +53,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     // setAddvisible(false);
@@ -129,9 +130,8 @@ const Index = (props) => {
             options: {
               filter: true,
               sort: true,
-              customBodyRender: (value) => {
-                return value.offerDate;
-              },
+              customBodyRender: (value) =>
+                moment(value.offerDate).format("YYYY/MM/DD"),
             },
           },
           {
@@ -140,9 +140,8 @@ const Index = (props) => {
             options: {
               filter: true,
               sort: true,
-              customBodyRender: (value) => {
-                return value.joiningDate;
-              },
+              customBodyRender: (value) =>
+                moment(value.joiningDate).format("YYYY/MM/DD"),
             },
           },
           {
@@ -163,7 +162,6 @@ const Index = (props) => {
               filter: true,
               sort: true,
               customBodyRender: (value, tableMeta) => {
-                console.log(tableMeta);
                 return value.offer_msg;
               },
             },
@@ -176,7 +174,6 @@ const Index = (props) => {
               sort: false,
               empty: true,
               customBodyRender: (value, tableMeta, updateValue) => {
-                console.log(tableMeta.rowData[0]);
                 return (
                   <>
                     <span>
@@ -185,8 +182,15 @@ const Index = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            clientRef: tableMeta.rowData[4].clientRef,
+                            annualCTC: tableMeta.rowData[4].annualCTC,
+                            offer_msg: tableMeta.rowData[4].offer_msg,
+                            joiningDate: moment(
+                              tableMeta.rowData[4].joiningDate
+                            ),
+                            offerDate: moment(tableMeta.rowData[4].offerDate),
+                          });
                           setVisible(true);
                           setUpdateId(tableMeta.rowData[4].id);
                         }}
@@ -214,55 +218,15 @@ const Index = (props) => {
         }}
       />
 
-      {/* <MaterialTable
-        options={{
-          exportButton: {
-            csv: true,
-            // pdf: true,
-          },
-          actionsColumnIndex: -1,
-          headerStyle: {
-            backgroundColor: "#a7a7a7",
-            color: "#FFF",
-          },
-        }}
-        columns={[
-          { title: "ID", field: "id" },
-          { title: "Candidate Name", field: "name" },
-          // { title: "Candidate Mobile", field: "phone" },
-          { title: "Candidate Email", field: "email" },
-          { title: "client Name", field: "company" },
-          { title: "Annual CTC", field: "CTC" },
-          { title: "Joining Date", field: "date" },
-          { title: "client Refferal %", field: "companyRef" },
-          { title: "Message", field: "Message" },
-        ]}
-        // data={datas.filter((data) => data.company === "Absolute Tech")}
-        data={datas}
-        title="OFFERS"
-        actions={[
-          {
-            icon: "delete",
-            tooltip: "Delete User",
-            onClick: (event, rowData) => showConfirm(event, rowData.id),
-          },
-          {
-            icon: "edite",
-            tooltip: "edite",
-            onClick: (event, rowData) => setVisible(true),
-          },
-          {
-            icon: "add",
-            tooltip: "Add User",
-            isFreeAction: true,
-            onClick: (event) => setAddvisible(true),
-          },
-        ]}
-      /> */}
       {/* ### update cadidate list */}
 
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={data}
+        >
           <h6>update list</h6>
           <div className="row">
             <div className="col-md-6 col-12">
@@ -298,13 +262,13 @@ const Index = (props) => {
                   },
                 ]}
               >
-                <DatePicker />
+                <DatePicker format={"YYYY/MM/DD"} />
               </Form.Item>
 
               <Form.Item
                 label="Client Reffarele %"
                 name="clientRef"
-                initialValue={data[4] ? data[4].clientRef : ""}
+                // initialValue={data[4] ? data[4].clientRef : ""}
                 rules={[
                   { required: true, message: "Please input Client Reffarele" },
                 ]}
@@ -332,7 +296,7 @@ const Index = (props) => {
               <Form.Item
                 label="Annual CTC"
                 name="annualCTC"
-                initialValue={data[4] ? data[4].annualCTC : ""}
+                // initialValue={data[4] ? data[4].annualCTC : ""}
                 rules={[
                   { required: true, message: "Please input your Annual CTC!" },
                 ]}
@@ -351,12 +315,12 @@ const Index = (props) => {
                   { required: true, message: "Please input your Offer date!" },
                 ]}
               >
-                <DatePicker />
+                <DatePicker format={"YYYY/MM/DD"} />
               </Form.Item>
             </div>
             <Form.Item
               label="Message"
-              initialValue={data[4] ? data[4].offer_msg : ""}
+              // initialValue={data[4] ? data[4].offer_msg : ""}
               name={"offer_msg"}
             >
               <TextArea rows={4} />

@@ -11,11 +11,14 @@ const Index = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
   const [form] = Form.useForm();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    trackStaus: "",
+    track_msg: "",
+  });
 
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -36,13 +39,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
@@ -78,7 +75,12 @@ const Index = (props) => {
   return (
     <>
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={data}
+        >
           <h6>Update list</h6>
 
           {/* <Form.Item
@@ -127,7 +129,6 @@ const Index = (props) => {
           <Form.Item
             label="Track Status"
             name="trackStaus"
-            initialValue={data[4] ? data[4] : ""}
             rules={[{ required: true, message: "Please input your Status!" }]}
             tooltip="This is a required field"
           >
@@ -142,7 +143,6 @@ const Index = (props) => {
 
           <Form.Item
             label="Message"
-            initialValue={data[5] ? data[5] : ""}
             rules={[
               { required: true, message: "Please input your Status message!" },
             ]}
@@ -159,12 +159,12 @@ const Index = (props) => {
           (data) => data.candidateStatus !== null
         )}
         columns={[
-          { title: "ID", name: "id" },
-          { title: "Candidate Name", name: "cname" },
+          { label: "ID", name: "id" },
+          { label: "Candidate Name", name: "cname" },
           // { title: "Candidate Mobile", name: "phone" },
-          { title: "Candidate Email", name: "cemail" },
+          { label: "Candidate Email", name: "cemail" },
           {
-            title: "Client Name",
+            label: "Client Name",
             name: "user",
             options: {
               filter: true,
@@ -175,7 +175,7 @@ const Index = (props) => {
             },
           },
           {
-            title: "Track Status",
+            label: "Track Status",
             name: "candidateStatus",
             options: {
               filter: false,
@@ -230,7 +230,7 @@ const Index = (props) => {
             },
           },
           {
-            title: "Message",
+            label: "Message",
             name: "candidateStatusMsg",
             // options: {
             //   filter: true,
@@ -242,7 +242,8 @@ const Index = (props) => {
             // },
           },
           {
-            name: "Edit",
+            label: "action",
+            name: "edite",
             options: {
               filter: false,
               sort: false,
@@ -256,8 +257,10 @@ const Index = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            trackStaus: tableMeta.rowData[4],
+                            track_msg: tableMeta.rowData[5],
+                          });
                           setVisible(true);
                           setUpdateId(tableMeta.rowData[0]);
                         }}

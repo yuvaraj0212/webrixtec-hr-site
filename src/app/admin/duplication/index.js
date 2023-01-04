@@ -9,12 +9,15 @@ import axios, { getAllCandidateMethode } from "../../axios";
 const Index = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    duplication_msg: "",
+    duplication_status: "",
+  });
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   //   deleteResumeDetails(id).then((val) => {
@@ -35,13 +38,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
@@ -76,7 +73,12 @@ const Index = (props) => {
   return (
     <>
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={data}
+        >
           <h6>Update list</h6>
           <>
             {/* <Form.Item
@@ -131,7 +133,6 @@ const Index = (props) => {
                 message: "Please input your duplication status!",
               },
             ]}
-            initialValue={data[4] ? data[4].duplication_status : ""}
           >
             <Select size={"large"} placeholder="Please select ">
               <Select.Option value="clieantDuplication">
@@ -147,7 +148,6 @@ const Index = (props) => {
           </Form.Item>
           <Form.Item
             label="Message"
-            initialValue={data[4] ? data[4].duplication_msg : ""}
             rules={[
               {
                 required: true,
@@ -239,10 +239,13 @@ const Index = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            duplication_status:
+                              tableMeta.rowData[4].duplication_status,
+                            duplication_msg:
+                              tableMeta.rowData[4].duplication_msg,
+                          });
                           setVisible(true);
-                          console.log(data);
                           setUpdateId(tableMeta.rowData[4].id);
                         }}
                       ></i>

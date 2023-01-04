@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addCandidate, getAllCandidate } from "../../../redux/action/candidate";
-import {
-  Modal,
-  Form,
-  //  Select,
-  Input,
-  DatePicker,
-  notification,
-} from "antd";
+import { Modal, Form, Select, Input, DatePicker, notification } from "antd";
 import MUIDataTable from "mui-datatables";
 import axios, { getAllCandidateMethode } from "../../axios";
+import moment from "moment";
 // const { confirm } = Modal;
 
 const Index = (props) => {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    technolgy: "",
+    procesingStatus: "",
+    budjet: "",
+    startDate: "",
+  });
   const [updateId, setUpdateId] = useState();
   // const [addvisible, setAddvisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -42,13 +41,13 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+  // const getAllResume = () => {
+  // getResume().then((val) => {
+  //   if (val.data.status === 200) {
+  //     setDates(val.data.result);
+  //   }
+  // });
+  // };
   const handleCancel = () => {
     setVisible(false);
     // setAddvisible(false);
@@ -125,9 +124,8 @@ const Index = (props) => {
             options: {
               filter: true,
               sort: true,
-              customBodyRender: (value) => {
-                return value.startDate;
-              },
+              customBodyRender: (value) =>
+                moment(value.startDate).format("YYYY/MM/DD"),
             },
           },
           {
@@ -168,8 +166,13 @@ const Index = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            technolgy: tableMeta.rowData[3].technolgy,
+                            procesingStatus:
+                              tableMeta.rowData[3].procesingStatus,
+                            budjet: tableMeta.rowData[3].budjet,
+                            startDate: moment(tableMeta.rowData[3].startDate),
+                          });
                           setVisible(true);
                           setUpdateId(tableMeta.rowData[5].id);
                         }}
@@ -200,7 +203,12 @@ const Index = (props) => {
       {/* ### update cadidate list */}
 
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={data}
+        >
           <h6>Update list</h6>
 
           {/* <Form.Item
@@ -227,7 +235,6 @@ const Index = (props) => {
           <Form.Item
             label="Technology"
             name="technolgy"
-            initialValue={data[3] ? data[3].technolgy : ""}
             rules={[
               { required: true, message: "Please input your technology!" },
             ]}
@@ -252,13 +259,12 @@ const Index = (props) => {
               { required: true, message: "Please input your Start Dtae!" },
             ]}
           >
-            <DatePicker />
+            <DatePicker format={"YYYY/MM/DD"} />
           </Form.Item>
 
           <Form.Item
             label="Interview Status"
             name="procesingStatus"
-            initialValue={data[3] ? data[3].procesingStatus : ""}
             rules={[
               {
                 required: true,
@@ -266,13 +272,24 @@ const Index = (props) => {
               },
             ]}
           >
-            <Input />
+            <Select size={"large"} placeholder="Please select ">
+              <Select.Option value="resumeShortlist">
+                Resume shortlist
+              </Select.Option>
+              <Select.Option value="firstRonund">First Round</Select.Option>
+              <Select.Option value="languageRound">
+                Language Round
+              </Select.Option>
+              <Select.Option value="technicalRound">
+                Technical Round
+              </Select.Option>
+              <Select.Option value="finalRound">Final Round</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
             label="Budget"
             name="budjet"
-            initialValue={data[3] ? data[3].budjet : ""}
             rules={[{ required: true, message: "Please input your budjet!" }]}
           >
             <Input />

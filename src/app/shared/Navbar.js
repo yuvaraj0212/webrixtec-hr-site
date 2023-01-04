@@ -12,11 +12,14 @@ import {
   notification,
   Button,
 } from "antd";
-import axios from "../axios";
+import axios, { getAllPratnerCandidateMethode } from "../axios";
 import { connect } from "react-redux";
 import { logout, partnerDetails } from "../../redux/action";
 import { Password } from "@mui/icons-material";
-import { getAllPratner } from "../../redux/action/candidate";
+import {
+  getAllPratner,
+  getAllPratnerCandidate,
+} from "../../redux/action/candidate";
 const { Option } = Select;
 
 class Navbar extends Component {
@@ -64,7 +67,7 @@ class Navbar extends Component {
             .then((res) => this.props.getPartner(res.data.result));
           notification.success({
             message: res.data.message,
-            placement: "bottomRight",
+            // placement: "bottomRight",
           });
         } else {
           notification.warn({
@@ -233,11 +236,11 @@ class Navbar extends Component {
                 </Form.Item>
 
                 <Form.Item
-                  label="Passwoer"
+                  label="Password"
                   name="password"
                   rules={[
                     {
-                      required: false,
+                      required: true,
                       message: "Please enter your Password!",
                     },
                     {
@@ -346,7 +349,19 @@ class Navbar extends Component {
                           className="text-warning "
                         >
                           <Link to={`/partners/dashboard/${data.name}`}>
-                            <span onClick={() => this.props.currentUser(data)}>
+                            <span
+                              onClick={() => {
+                                sessionStorage.setItem(
+                                  "pratner_name",
+                                  JSON.stringify(data.name)
+                                );
+                                this.props.currentUser(data);
+                                getAllPratnerCandidateMethode(
+                                  this.props.getAllPratnerCandidate,
+                                  data.name
+                                );
+                              }}
+                            >
                               {data.name}
                             </span>
                           </Link>
@@ -427,7 +442,7 @@ class Navbar extends Component {
               </a>
             </li> */}
 
-              <Dropdown alignRight as="li" className="nav-item border-left">
+              {/* <Dropdown alignRight as="li" className="nav-item border-left">
                 <Dropdown.Toggle
                   as="a"
                   className="nav-link count-indicator cursor-pointer"
@@ -603,7 +618,7 @@ class Navbar extends Component {
                     <Trans>See all notifications</Trans>
                   </p>
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
 
               <Dropdown alignRight as="li" className="nav-item">
                 <Dropdown.Toggle
@@ -617,7 +632,7 @@ class Navbar extends Component {
                       alt="profile"
                     />
                     <p className="mb-0 d-none d-sm-block navbar-profile-name">
-                      <Trans>Henry Klein</Trans>
+                      <Trans>{this.props.auth.name}</Trans>
                     </p>
                     <i className="mdi mdi-menu-down d-none d-sm-block"></i>
                   </div>
@@ -693,6 +708,7 @@ const mapDispatchToProps = (dispatch) => {
     logout: () => dispatch(logout()),
     getPartner: (val) => dispatch(getAllPratner(val)),
     currentUser: (val) => dispatch(partnerDetails(val)),
+    getAllPratnerCandidate: (val) => dispatch(getAllPratnerCandidate(val)),
   };
 };
 

@@ -14,17 +14,26 @@ import TextArea from "antd/lib/input/TextArea";
 import MUIDataTable from "mui-datatables";
 import axios, { getAllCandidateMethode } from "../../axios";
 import { addCandidate, getAllCandidate } from "../../../redux/action/candidate";
+import moment from "moment";
 const { confirm } = Modal;
 
 const Candidate = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    cname: "",
+    cphone: "",
+    cemail: "",
+    cMSG: "",
+    jobID: "",
+    cDOB: "",
+    mfile: "",
+  });
   const [addvisible, setAddvisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
-    console.log("render");
-  }, [data]);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   const showConfirm = (event, id) => {
     confirm({
@@ -60,7 +69,6 @@ const Candidate = (props) => {
   const handleCancel = () => {
     setVisible(false);
     setAddvisible(false);
-    setData([]);
     form.resetFields();
   };
   const handleSubmit = (values) => {
@@ -76,7 +84,7 @@ const Candidate = (props) => {
         year: "numeric",
       }).format(values.cDOB)
     );
-    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("mfile", values.mfile.file);
     obj.append("cMSG", values.cMSG);
     obj.append("createdBy", "webrixtec");
     obj.append("jobID", values.jobID);
@@ -89,10 +97,12 @@ const Candidate = (props) => {
           getAllCandidateMethode(props.getAllCandidate);
           notification.success({
             message: res.data.message,
+            // duration: 0,
           });
         } else {
           notification.warn({
-            message: res.data.message,
+            message: res.data.error,
+            // duration: 0,
           });
         }
       });
@@ -111,7 +121,7 @@ const Candidate = (props) => {
         year: "numeric",
       }).format(values.cDOB)
     );
-    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("mfile", values.mfile.file);
     obj.append("cMSG", values.cMSG);
     obj.append("createdBy", "webrixtec");
     obj.append("jobID", values.jobID);
@@ -130,108 +140,110 @@ const Candidate = (props) => {
       }
     });
   };
-  console.log(data);
   return (
     <>
-      {visible && data ? (
-        <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-          <Form {...layout} form={form} onFinish={handleSubmit}>
-            <h6>Update Candidate</h6>
+      <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
+        <Form
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={data}
+        >
+          <h6>Update Candidate</h6>
 
-            <Form.Item
-              label="Candidate Name"
-              name="cname"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
-              initialValue={data[1]}
-            >
-              <Input />
-            </Form.Item>
+          <Form.Item
+            label="Candidate Name"
+            name="cname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your username!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Form.Item
-              label=" candidate Email"
-              name="cemail"
-              rules={[
-                { required: true, message: "Please input your email !" },
-                {
-                  type: "email",
-                },
-              ]}
-              initialValue={data[3]}
-            >
-              <Input />
-            </Form.Item>
+          <Form.Item
+            label=" candidate Email"
+            name="cemail"
+            rules={[
+              { required: true, message: "Please input your email !" },
+              {
+                type: "email",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Form.Item
-              label="Mobile"
-              name="cphone"
-              rules={[{ required: true, message: "Please input your mobile!" }]}
-              initialValue={data[2]}
-            >
-              <InputNumber
-                style={{
-                  width: "100%",
-                }}
-              />
-            </Form.Item>
+          <Form.Item
+            label="Mobile"
+            name="cphone"
+            rules={[{ required: true, message: "Please input your mobile!" }]}
+          >
+            <InputNumber
+              style={{
+                width: "100%",
+              }}
+            />
+          </Form.Item>
 
-            <Form.Item
-              label="Candidate DOB"
-              name="cDOB"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Candidate DOB!",
-                },
-              ]}
-              // initialValue={moment().get(data[4])}
-            >
-              <DatePicker
-                style={{
-                  width: "100%",
-                }}
-              />
-            </Form.Item>
+          <Form.Item
+            label="Candidate DOB"
+            name="cDOB"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Candidate DOB!",
+              },
+            ]}
+          >
+            <DatePicker
+              style={{
+                width: "100%",
+              }}
+              format={"YYYY/MM/DD"}
+            />
+          </Form.Item>
 
-            <Form.Item
-              label="job ID"
-              name="jobID"
-              rules={[{ required: true, message: "Please input your JOB ID!" }]}
-              initialValue={data[6]}
-            >
-              <Input />
-            </Form.Item>
+          <Form.Item
+            label="job ID"
+            name="jobID"
+            rules={[{ required: true, message: "Please input your JOB ID!" }]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Form.Item
-              name="mfile"
-              label="file Upload"
-              rules={[{ required: true, message: "Please input your resume!" }]}
+          <Form.Item
+            name="mfile"
+            label="file Upload"
+            rules={[{ required: true, message: "Please input your resume!" }]}
+          >
+            <Upload
+              listType="picture"
+              beforeUpload={(file) => false}
+              //  defaultFileList={data.mfile}
             >
-              <Upload listType="picture">
-                <Button
-                // icon={<UploadOutlined />}
-                >
-                  Click to upload
-                </Button>
-              </Upload>
-            </Form.Item>
+              <Button>Click to upload</Button>
+            </Upload>
+          </Form.Item>
 
-            <Form.Item
-              label="Message"
-              name={"cMSG"}
-              initialValue={data[8]}
-              rules={[
-                { required: true, message: "Please input your Messsage!" },
-              ]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-          </Form>
-        </Modal>
-      ) : (
-        ""
-      )}
+          <Form.Item
+            label="Message"
+            name={"cMSG"}
+            rules={[
+              {
+                required: true,
+                message: "Please input your Messsage!",
+              },
+            ]}
+          >
+            <TextArea rows={4} />
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <Modal visible={addvisible} onOk={form.submit} onCancel={handleCancel}>
         <Form {...layout} form={form} onFinish={createhandleSubmit}>
           <h6>Add Candidate</h6>
@@ -311,9 +323,10 @@ const Candidate = (props) => {
           <Form.Item
             name="mfile"
             label="file Upload"
+            beforeUpload={(file) => true}
             rules={[{ required: true, message: "Please input your resume!" }]}
           >
-            <Upload listType="picture">
+            <Upload listType="picture" beforeUpload={(file) => false}>
               <Button
               // icon={<UploadOutlined />}
               >
@@ -322,7 +335,13 @@ const Candidate = (props) => {
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Message" name={"cMSG"}>
+          <Form.Item
+            label="Message"
+            name={"cMSG"}
+            rules={[
+              { required: true, message: "Message field Must not empty" },
+            ]}
+          >
             <TextArea rows={4} />
           </Form.Item>
 
@@ -392,6 +411,7 @@ const Candidate = (props) => {
             options: {
               filter: false,
               sort: true,
+              customBodyRender: (value) => moment(value).format("YYYY/MM/DD"),
             },
           },
           {
@@ -456,10 +476,24 @@ const Candidate = (props) => {
                         style={{ fontSize: "22px" }}
                         className="mdi mdi-border-color cursor-pointer"
                         onClick={() => {
-                          console.log(tableMeta.rowData);
-                          setData(tableMeta.rowData);
+                          setData({
+                            cname: tableMeta.rowData[1],
+                            cphone: tableMeta.rowData[2],
+                            cemail: tableMeta.rowData[3],
+                            jobID: tableMeta.rowData[6],
+                            cMSG: tableMeta.rowData[8],
+                            cDOB: moment(tableMeta.rowData[4]),
+                            mfile: [
+                              {
+                                uid: "-1",
+                                name: "old resume",
+                                status: "done",
+                                url: tableMeta.rowData[7],
+                                thumbUrl: tableMeta.rowData[7],
+                              },
+                            ],
+                          });
                           setUpdateId(tableMeta.rowData[0]);
-                          console.log(data);
                           setVisible(true);
                         }}
                       ></i>

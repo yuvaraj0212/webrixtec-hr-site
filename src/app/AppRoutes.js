@@ -21,27 +21,18 @@ const Tracker = lazy(() => import("./admin/trcker"));
 const YetToStart = lazy(() => import("./admin/yetToStart"));
 const jobdescription = lazy(() => import("./admin/jobdescription"));
 // user
-
 const Login = lazy(() => import("./user-pages/Login"));
 const Register1 = lazy(() => import("./user-pages/Register"));
-
 const Buttons = lazy(() => import("./basic-ui/Buttons"));
 const Dropdowns = lazy(() => import("./basic-ui/Dropdowns"));
 const Typography = lazy(() => import("./basic-ui/Typography"));
-
 const BasicElements = lazy(() => import("./form-elements/BasicElements"));
-
 const BasicTable = lazy(() => import("./tables/BasicTable"));
-
 const Mdi = lazy(() => import("./icons/Mdi"));
-
 const ChartJs = lazy(() => import("./charts/ChartJs"));
-
 const Error404 = lazy(() => import("./error-pages/Error404"));
 const Error500 = lazy(() => import("./error-pages/Error500"));
-
 //  partners
-
 const partnersJobDesc = lazy(() => import("./partners/pages/jobdescription"));
 const partnersCandidate = lazy(() => import("./partners/pages/candidate"));
 const partnersOffers = lazy(() => import("./partners/pages/offer"));
@@ -49,6 +40,17 @@ const partnersDuplication = lazy(() => import("./partners/pages/duplication"));
 const partnersProcessing = lazy(() => import("./partners/pages/processing"));
 const partnersRejected = lazy(() => import("./partners/pages/rejected"));
 const Partner = lazy(() => import("./partners"));
+// hr
+const hr = lazy(() => import("./tracker/hr/index"));
+const hrAttendance = lazy(() => import("./tracker/hr/attendance/index"));
+const hrBonuse = lazy(() => import("./tracker/hr/bonuse/index"));
+const hrCurrentProject = lazy(() =>
+  import("./tracker/hr/currentProject/index")
+);
+const hrleave = lazy(() => import("./tracker/hr/leave/index"));
+const hrProject = lazy(() => import("./tracker/hr/project/index"));
+const hrSalary = lazy(() => import("./tracker/hr/salary/index"));
+const hrSkils = lazy(() => import("./tracker/hr/skils/index"));
 
 class AppRoutes extends Component {
   constructor(props) {
@@ -102,6 +104,18 @@ class AppRoutes extends Component {
         <Route path="/icons/mdi" component={Mdi} />
 
         <Route path="/charts/chart-js" component={ChartJs} />
+        {/* hr */}
+        <Route path="/hr/dashboard" component={hr} />
+        <Route path="/hr/attendance/dashboard" component={hrAttendance} />
+        <Route path="/hr/bonuse/dashboard" component={hrBonuse} />
+        <Route
+          path="/hr/current-project/dashboard"
+          component={hrCurrentProject}
+        />
+        <Route path="/hr/leave/dashboard" component={hrleave} />
+        <Route path="/hr/project/dashboard" component={hrProject} />
+        <Route path="/hr/salary/dashboard" component={hrSalary} />
+        <Route path="/hr/skils/dashboard" component={hrSkils} />
 
         <Redirect to={"/user-pages/login-1"} />
       </Suspense>

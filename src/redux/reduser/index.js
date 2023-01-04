@@ -1,4 +1,4 @@
-import { LOG_IN, LOG_OUT, PARTNER } from "../action";
+import { LOG_IN, LOG_OUT, PARTNER, PARTNET_TO_ADMIN } from "../action";
 
 var initialState = {
   authenticated: false,
@@ -28,6 +28,11 @@ const authReduser = (state = initialState, action) => {
         ...state,
         adminToPartner: true,
         inPartnerData: action.playload,
+      };
+    case PARTNET_TO_ADMIN:
+      return {
+        ...state,
+        adminToPartner: false,
       };
 
     default:

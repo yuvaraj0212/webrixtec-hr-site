@@ -74,7 +74,12 @@ th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-sizeMedium.tss-10syd3x-MUIDa
   background: #fdc134 !important;
   color: white !important;
 }
-
+.css-1ex1afd-MuiTableCell-root {
+  text-align: center !important;
+}
+.ant-notification.ant-notification-topRight {
+  top: 98px !important;
+}
 th {
   width: 17%;
   color: #284966;

@@ -11,7 +11,7 @@ import MUIDataTable from "mui-datatables";
 import axios, { getAllCandidateMethode } from "../../axios";
 import { connect } from "react-redux";
 import { addCandidate, getAllCandidate } from "../../../redux/action/candidate";
-import TextArea from "antd/lib/input/TextArea";
+// import TextArea from "antd/lib/input/TextArea";
 // const { confirm } = Modal;
 
 const Index = (props) => {
@@ -160,10 +160,10 @@ const Index = (props) => {
           (data) => data.candidateStatus === null
         )}
         columns={[
-          { title: "ID", name: "id" },
-          { title: "Candidate Name", name: "cname" },
+          { label: "ID", name: "id" },
+          { label: "Candidate Name", name: "cname" },
           // { title: "Candidate Mobile", name: "phone" },
-          { title: "Candidate Email", name: "cemail" },
+          { label: "Candidate Email", name: "cemail" },
           {
             label: "Company",
             name: "user",
@@ -176,7 +176,7 @@ const Index = (props) => {
             },
           },
           {
-            title: "Track Status",
+            label: "Track Status",
             name: "trackstatus",
             options: {
               filter: false,
@@ -195,6 +195,7 @@ const Index = (props) => {
           },
           // { title: "Message", name: "candidateStatusMsg" },
           {
+            label: "Action",
             name: "Edit",
             options: {
               filter: false,

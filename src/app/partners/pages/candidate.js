@@ -17,19 +17,29 @@ import TextArea from "antd/lib/input/TextArea";
 import MUIDataTable from "mui-datatables";
 import { getAllPratnerCandidate } from "../../../redux/action/candidate";
 import axios, {
-  getAllCandidateMethode,
+  // getAllCandidateMethode,
   getAllPratnerCandidateMethode,
 } from "../../axios";
+import moment from "moment";
+// import { Link } from "react-router-dom";
 const Candidate = (props) => {
   const User = useSelector((state) => state.auth);
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
   const [addvisible, setAddvisible] = useState(false);
+
   const [form] = Form.useForm();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    cname: "",
+    cphone: "",
+    cemail: "",
+    cMSG: "",
+    jobID: "",
+    cDOB: "",
+  });
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   //   deleteResumeDetails(id).then((val) => {
@@ -51,13 +61,6 @@ const Candidate = (props) => {
   //   });
   // };
 
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
   const layout = {
     labelCol: {
       span: 8,
@@ -84,7 +87,7 @@ const Candidate = (props) => {
         year: "numeric",
       }).format(values.cDOB)
     );
-    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("mfile", values.mfile.file);
     obj.append("cMSG", values.cMSG);
     obj.append("createdBy", "webrixtec");
     obj.append("jobID", values.jobID);
@@ -94,7 +97,9 @@ const Candidate = (props) => {
       .post(`/user/update-candidate?candidId=${updateId}`, obj)
       .then((res) => {
         if (res.data.status === 200) {
-          getAllCandidateMethode(props.getAllCandidate);
+          // getAllCandidateMethode(props.getAllCandidate);
+          var partner_name = JSON.parse(sessionStorage.getItem("pratner_name"));
+          getAllPratnerCandidateMethode(props.getAllCandidate, partner_name);
           notification.success({
             message: res.data.message,
           });
@@ -106,6 +111,7 @@ const Candidate = (props) => {
       });
   };
   const createhandleSubmit = (values) => {
+    console.log(values);
     let obj = new FormData();
     obj.append("cname", values.cname);
     obj.append("cemail", values.cemail);
@@ -118,7 +124,7 @@ const Candidate = (props) => {
         year: "numeric",
       }).format(values.cDOB)
     );
-    obj.append("mfile", values.mfile.file.originFileObj);
+    obj.append("mfile", values.mfile.file);
     obj.append("cMSG", values.cMSG);
     obj.append("createdBy", "webrixtec");
     obj.append("jobID", values.jobID);
@@ -140,7 +146,12 @@ const Candidate = (props) => {
   return (
     <>
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          initialValues={data}
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+        >
           <h6>Update Candidate</h6>
 
           <Form.Item
@@ -190,13 +201,14 @@ const Candidate = (props) => {
               style={{
                 width: "100%",
               }}
+              format={"YYYY/MM/DD"}
             />
           </Form.Item>
 
           <Form.Item
             label="job ID"
             name="jobID"
-            rules={[{ required: false, message: "Please input your JOB ID!" }]}
+            rules={[{ required: true, message: "Please input your JOB ID!" }]}
           >
             <Input />
           </Form.Item>
@@ -206,7 +218,12 @@ const Candidate = (props) => {
             label="file Upload"
             rules={[{ required: true, message: "Please input your resume!" }]}
           >
-            <Upload listType="picture">
+            <Upload
+              listType="picture"
+              beforeUpload={(file) => {
+                return false;
+              }}
+            >
               <Button
               // icon={<UploadOutlined />}
               >
@@ -215,7 +232,11 @@ const Candidate = (props) => {
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Message" name={"cMSG"}>
+          <Form.Item
+            label="Message"
+            name={"cMSG"}
+            rules={[{ required: true, message: "Please input your message!" }]}
+          >
             <TextArea rows={4} />
           </Form.Item>
 
@@ -309,7 +330,12 @@ const Candidate = (props) => {
             label="file Upload"
             rules={[{ required: true, message: "Please input your resume!" }]}
           >
-            <Upload listType="picture">
+            <Upload
+              listType="picture"
+              beforeUpload={(file) => {
+                return false;
+              }}
+            >
               <Button
               // icon={<UploadOutlined />}
               >
@@ -376,6 +402,7 @@ const Candidate = (props) => {
             options: {
               filter: false,
               sort: true,
+              customBodyRender: (value) => moment(value).format("YYYY/MM/DD"),
             },
           },
           {
@@ -405,11 +432,14 @@ const Candidate = (props) => {
               sort: true,
               customBodyRender: (value) => {
                 return (
+                  // <Link to={value} target="_blank" download>
+                  //   Download
+                  // </Link>
                   <a
                     href={value}
                     target="_blank"
                     rel="noopener noreferrer"
-                    download
+                    // download
                   >
                     Download
                   </a>
@@ -443,8 +473,14 @@ const Candidate = (props) => {
                             style={{ fontSize: "22px" }}
                             className="mdi mdi-border-color cursor-pointer"
                             onClick={() => {
-                              console.log(tableMeta.rowData);
-                              setData(tableMeta.rowData);
+                              setData({
+                                cname: tableMeta.rowData[1],
+                                cphone: tableMeta.rowData[2],
+                                cemail: tableMeta.rowData[3],
+                                jobID: tableMeta.rowData[6],
+                                cMSG: tableMeta.rowData[8],
+                                cDOB: moment(tableMeta.rowData[4]),
+                              });
                               setVisible(true);
                               setUpdateId(tableMeta.rowData[0]);
                             }}
@@ -468,18 +504,20 @@ const Candidate = (props) => {
         ]}
         options={{
           selectableRows: false,
-
           responsive: "standard",
           viewColumns: false,
-          customToolbar: () => (
-            <span>
-              <i
-                style={{ fontSize: "19px", color: "#66696c" }}
-                className="mdi mdi mdi-account-plus cursor-pointer"
-                onClick={() => setAddvisible(true)}
-              ></i>
-            </span>
-          ),
+          customToolbar: () =>
+            User.roles[0].rolename !== "ROLE_ADMIN" ? (
+              <span>
+                <i
+                  style={{ fontSize: "19px", color: "#66696c" }}
+                  className="mdi mdi mdi-account-plus cursor-pointer"
+                  onClick={() => setAddvisible(true)}
+                ></i>
+              </span>
+            ) : (
+              ""
+            ),
         }}
       />
     </>

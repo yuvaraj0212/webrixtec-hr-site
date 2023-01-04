@@ -17,7 +17,7 @@ class Footer extends Component {
               </a>
               2020
             </span>
-            <span className="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+            {/* <span className="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
               Free{" "}
               <a
                 href="https://www.bootstrapdash.com/react-admin-templates/"
@@ -28,7 +28,7 @@ class Footer extends Component {
                 react admin{" "}
               </a>{" "}
               templates from BootstrapDash.com.{" "}
-            </span>
+            </span> */}
           </div>
         </div>
       </footer>

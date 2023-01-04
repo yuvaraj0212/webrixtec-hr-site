@@ -33,24 +33,35 @@ export class Login extends Component {
         if (response.data.status === 200) {
           if (response.data.result.roles.length > 0) {
             this.props.Authenticat(response.data.result);
-            localStorage.setItem(
+            sessionStorage.setItem(
               "token",
               JSON.stringify(response.data.result.token)
             );
             notification.success({
               message: "login successfull",
-              placement: "bottomRight",
             });
 
-            console.log(this.props);
+            console.log(JSON.parse(sessionStorage.getItem("token")));
             if (response.data.result.roles[0].rolename === "ROLE_PARTNER") {
-              getAllPratnerCandidateMethode(
-                this.props.getAllPratnerCandidate,
-                response.data.result.name
-              );
-              this.props.history.push(
-                `/partners/dashboard/${response.data.result.name}`
-              );
+              setTimeout(() => {
+                getAllPratnerCandidateMethode(
+                  this.props.getAllPratnerCandidate,
+                  response.data.result.name
+                );
+                this.props.history.push(
+                  `/partners/dashboard/${response.data.result.name}`
+                );
+              }, 2000);
+            } else if (
+              response.data.result.roles[0].rolename === "ROLE_EMPOLYE"
+            ) {
+              setTimeout(() => {
+                getAllPratnerCandidateMethode(
+                  this.props.getAllPratnerCandidate,
+                  response.data.result.name
+                );
+                this.props.history.push(`/hr/dashboard`);
+              }, 2000);
             } else {
               axios
                 .get("/admin/get/userdetails", {

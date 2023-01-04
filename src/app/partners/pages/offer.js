@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import MUIDataTable from "mui-datatables";
 import axios, { getAllPratnerCandidateMethode } from "../../axios";
 import { getAllPratnerCandidate } from "../../../redux/action/candidate";
+import moment from "moment";
 // const { confirm } = Modal;
 const Index = (props) => {
   const User = useSelector((state) => state.auth);
@@ -24,10 +25,16 @@ const Index = (props) => {
   const [visible, setVisible] = useState(false);
   // const [addvisible, setAddvisible] = useState(false);
   const [form] = Form.useForm();
-
+  const [data, setData] = useState({
+    clientRef: "",
+    annualCTC: "",
+    offer_msg: "",
+    joiningDate: "",
+    offerDate: "",
+  });
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -48,13 +55,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     // setAddvisible(false);
@@ -68,7 +69,8 @@ const Index = (props) => {
         console.log(res);
         setVisible(false);
         form.resetFields();
-        getAllPratnerCandidateMethode(props.getAllCandidate, props.auth.name);
+        var partner_name = JSON.parse(sessionStorage.getItem("pratner_name"));
+        getAllPratnerCandidateMethode(props.getAllCandidate, partner_name);
         notification.success({
           message: res.data.message,
         });
@@ -136,9 +138,8 @@ const Index = (props) => {
             options: {
               filter: true,
               sort: true,
-              customBodyRender: (value) => {
-                return value.offerDate;
-              },
+              customBodyRender: (value) =>
+                moment(value.offerDate).format("YYYY/MM/DD"),
             },
           },
           {
@@ -147,9 +148,8 @@ const Index = (props) => {
             options: {
               filter: true,
               sort: true,
-              customBodyRender: (value) => {
-                return value.joiningDate;
-              },
+              customBodyRender: (value) =>
+                moment(value.joiningDate).format("YYYY/MM/DD"),
             },
           },
           {
@@ -194,6 +194,17 @@ const Index = (props) => {
                             className="mdi mdi-border-color cursor-pointer"
                             onClick={() => {
                               setVisible(true);
+                              setData({
+                                clientRef: tableMeta.rowData[4].clientRef,
+                                annualCTC: tableMeta.rowData[4].annualCTC,
+                                offer_msg: tableMeta.rowData[4].offer_msg,
+                                joiningDate: moment(
+                                  tableMeta.rowData[4].joiningDate
+                                ),
+                                offerDate: moment(
+                                  tableMeta.rowData[4].offerDate
+                                ),
+                              });
                               setUpdateId(tableMeta.rowData[4].id);
                             }}
                           ></i>
@@ -271,8 +282,13 @@ const Index = (props) => {
       {/* ### update cadidate list */}
 
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
-          <h6>Create list</h6>
+        <Form
+          initialValues={data}
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+        >
+          <h6>update list</h6>
           <div className="row">
             <div className="col-md-6 col-12">
               {/* <Form.Item
@@ -307,7 +323,7 @@ const Index = (props) => {
                   },
                 ]}
               >
-                <DatePicker />
+                <DatePicker format={"YYYY/MM/DD"} />
               </Form.Item>
 
               <Form.Item
@@ -358,10 +374,14 @@ const Index = (props) => {
                   { required: true, message: "Please input your Offer date!" },
                 ]}
               >
-                <DatePicker />
+                <DatePicker format={"YYYY/MM/DD"} />
               </Form.Item>
             </div>
-            <Form.Item label="Message" name={"offer_msg"}>
+            <Form.Item
+              label="Message"
+              name={"offer_msg"}
+              rules={[{ required: true, message: "Please input your mesage!" }]}
+            >
               <TextArea rows={4} />
             </Form.Item>
           </div>

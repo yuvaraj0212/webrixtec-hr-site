@@ -14,9 +14,13 @@ const Index = (props) => {
   const [visible, setVisible] = useState(false);
   const [updateId, setUpdateId] = useState();
   const [form] = Form.useForm();
+  const [data, setData] = useState({
+    rejected_msg: "",
+    rof: "",
+  });
   useEffect(() => {
-    getAllResume();
-  }, []);
+    form.setFieldsValue(data);
+  }, [form, data]);
 
   // const deleteResume = (id) => {
   // deleteResumeDetails(id).then((val) => {
@@ -37,13 +41,7 @@ const Index = (props) => {
   //     onCancel() {},
   //   });
   // };
-  const getAllResume = () => {
-    // getResume().then((val) => {
-    //   if (val.data.status === 200) {
-    //     setDates(val.data.result);
-    //   }
-    // });
-  };
+
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
@@ -54,7 +52,8 @@ const Index = (props) => {
     axios.post("/admin/update-rejected", values).then((res) => {
       if (res.data.status === 200) {
         form.resetFields();
-        getAllPratnerCandidateMethode(props.getAllCandidate, props.auth.name);
+        var partner_name = JSON.parse(sessionStorage.getItem("pratner_name"));
+        getAllPratnerCandidateMethode(props.getAllCandidate, partner_name);
         notification.success({
           message: res.data.message,
         });
@@ -139,6 +138,10 @@ const Index = (props) => {
                             style={{ fontSize: "22px" }}
                             className="mdi mdi-border-color cursor-pointer"
                             onClick={() => {
+                              setData({
+                                rejected_msg: tableMeta.rowData[4].rejected_msg,
+                                rof: tableMeta.rowData[4].rof,
+                              });
                               setVisible(true);
                               setUpdateId(tableMeta.rowData[4].id);
                             }}
@@ -208,7 +211,12 @@ const Index = (props) => {
         }
       /> */}
       <Modal visible={visible} onOk={form.submit} onCancel={handleCancel}>
-        <Form {...layout} form={form} onFinish={handleSubmit}>
+        <Form
+          initialValues={data}
+          {...layout}
+          form={form}
+          onFinish={handleSubmit}
+        >
           <h6>Update list</h6>
 
           {/* <Form.Item
