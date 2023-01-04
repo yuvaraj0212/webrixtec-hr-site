@@ -51,7 +51,16 @@ const hrleave = lazy(() => import("./tracker/hr/leave/index"));
 const hrProject = lazy(() => import("./tracker/hr/project/index"));
 const hrSalary = lazy(() => import("./tracker/hr/salary/index"));
 const hrSkils = lazy(() => import("./tracker/hr/skils/index"));
-
+// employe
+const employe = lazy(() => import("./tracker/employe/index"));
+const employeAttendance = lazy(() =>
+  import("./tracker/employe/attendance/index")
+);
+const employeBonuse = lazy(() => import("./tracker/employe/bonuse/index"));
+const employeCurrentProject = lazy(() =>
+  import("./tracker/employe/currentProject/index")
+);
+const employeleave = lazy(() => import("./tracker/employe/leave/index"));
 class AppRoutes extends Component {
   constructor(props) {
     super(props);
@@ -116,6 +125,19 @@ class AppRoutes extends Component {
         <Route path="/hr/project/dashboard" component={hrProject} />
         <Route path="/hr/salary/dashboard" component={hrSalary} />
         <Route path="/hr/skils/dashboard" component={hrSkils} />
+        {/* employe */}
+
+        <Route path="/employe/dashboard" component={employe} />
+        <Route
+          path="/employe/attendance/dashboard"
+          component={employeAttendance}
+        />
+        <Route path="/employe/bonuse/dashboard" component={employeBonuse} />
+        <Route
+          path="/employe/current-project/dashboard"
+          component={employeCurrentProject}
+        />
+        <Route path="/employe/leave/dashboard" component={employeleave} />
 
         <Redirect to={"/user-pages/login-1"} />
       </Suspense>

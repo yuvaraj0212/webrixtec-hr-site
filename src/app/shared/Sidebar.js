@@ -811,7 +811,7 @@ class Sidebar extends Component {
       );
     } else if (
       this.props.auth.name &&
-      this.props.auth.roles[0].rolename === "ROLE_EMPOLYE" &&
+      this.props.auth.roles[0].rolename === "ROLE_HR" &&
       this.props.auth.adminToPartner === false
     ) {
       return (
@@ -1393,6 +1393,185 @@ class Sidebar extends Component {
               </a>
             </li> */}
             </>
+          </ul>
+        </nav>
+      );
+    } else if (
+      this.props.auth.name &&
+      this.props.auth.roles[0].rolename === "ROLE_EMPLOYE" &&
+      this.props.auth.adminToPartner === false
+    ) {
+      return (
+        <nav className="sidebar sidebar-offcanvas" id="sidebar">
+          <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+            <Link
+              className="sidebar-brand brand-logo"
+              to={"/employe/dashboard"}
+            >
+              <h2
+                style={{
+                  color: "white",
+                }}
+              >
+                EMP
+                <span style={{ color: "#fdc134" }}>.</span>
+              </h2>
+            </Link>
+            <Link
+              className="sidebar-brand brand-logo-mini"
+              to={"/employe/dashboard"}
+            >
+              <img
+                src={require("../../assets/images/logo.png")}
+                alt="logo "
+                style={{ width: "100%" }}
+              />
+            </Link>
+          </div>
+          <ul className="nav">
+            <li className="nav-item nav-category">
+              <span className="nav-link">
+                <Trans>Navigation</Trans>
+              </span>
+            </li>
+            {/* <li
+              className={
+                this.isPathActive("/employe/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-speedometer"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Dashboard</Trans>
+                </span>
+              </Link>
+            </li> */}
+
+            {/* <li
+              className={
+                this.isPathActive("/employe/project/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/project/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-reload"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Project details</Trans>
+                </span>
+              </Link>
+            </li> */}
+
+            <li
+              className={
+                this.isPathActive("/employe/current-project/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link
+                className="nav-link"
+                to="/employe/current-project/dashboard"
+              >
+                <span className="menu-icon">
+                  <i className="mdi mdi-block-helper"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Current Project</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/employe/attendance/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/attendance/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-wallet-travel"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>attendance</Trans>
+                </span>
+              </Link>
+            </li>
+
+            <li
+              className={
+                this.isPathActive("/employe/leave/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/leave/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-account"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Leave details</Trans>
+                </span>
+              </Link>
+            </li>
+            {/* 
+            <li
+              className={
+                this.isPathActive("/employe/salary/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/salary/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-note-text"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>salary details</Trans>
+                </span>
+              </Link>
+            </li> */}
+
+            <li
+              className={
+                this.isPathActive("/employe/bonuse/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/bonuse/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-near-me"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>Bonuse details</Trans>
+                </span>
+              </Link>
+            </li>
+
+            {/* <li
+              className={
+                this.isPathActive("/employe/skils/dashboard")
+                  ? "nav-item menu-items active"
+                  : "nav-item menu-items"
+              }
+            >
+              <Link className="nav-link" to="/employe/skils/dashboard">
+                <span className="menu-icon">
+                  <i className="mdi mdi-cached"></i>
+                </span>
+                <span className="menu-title">
+                  <Trans>skils</Trans>
+                </span>
+              </Link>
+            </li> */}
           </ul>
         </nav>
       );

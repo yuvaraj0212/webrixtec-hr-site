@@ -52,15 +52,23 @@ export class Login extends Component {
                   `/partners/dashboard/${response.data.result.name}`
                 );
               }, 2000);
-            } else if (
-              response.data.result.roles[0].rolename === "ROLE_EMPOLYE"
-            ) {
+            } else if (response.data.result.roles[0].rolename === "ROLE_HR") {
               setTimeout(() => {
                 getAllPratnerCandidateMethode(
                   this.props.getAllPratnerCandidate,
                   response.data.result.name
                 );
                 this.props.history.push(`/hr/dashboard`);
+              }, 2000);
+            } else if (
+              response.data.result.roles[0].rolename === "ROLE_EMPLOYE"
+            ) {
+              setTimeout(() => {
+                getAllPratnerCandidateMethode(
+                  this.props.getAllPratnerCandidate,
+                  response.data.result.name
+                );
+                this.props.history.push(`/employe/dashboard`);
               }, 2000);
             } else {
               axios
